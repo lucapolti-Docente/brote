@@ -110,6 +110,7 @@
 .prog-actions #undoBtn{flex:0 0 52px;font-size:1.2rem}
 .prog-actions .step{background:var(--sun-suave);border-color:var(--sun-oscuro)}
 .prog-actions .primary{background:var(--teal);border-color:var(--teal);color:#fff}
+.prog-actions .ico{width:18px;height:18px;vertical-align:-3px;margin-right:4px}
 .prog-actions button:disabled{opacity:.4;cursor:not-allowed}
 
 @media (min-width:900px){
@@ -137,7 +138,8 @@
 @media (max-width:480px){.topbar h1 .long{display:none}}
 @media (max-width:640px){
   /* Celular: lo que lleva en la mano, a lo ancho; abajo las flechas y la lista. */
-  .controls{grid-template-areas:"carry carry" "dpad right"}
+  .controls{grid-template-columns:minmax(0,1fr);grid-template-areas:"carry" "dpad" "right"}
+  .controls .dpad{justify-self:center}
 }
 @media (max-width:899px){
   /* En el celular se puede scrollear: el tablero tiene un alto mínimo para no quedar chiquito. */

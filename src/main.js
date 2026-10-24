@@ -27,8 +27,9 @@ function textosFijos(){
   todos('.dpad [data-dir]').forEach(b => { b.setAttribute('aria-label', ETIQUETA[b.dataset.dir]); });
   $('undoBtn').setAttribute('aria-label', T.borrarUltimo); $('undoBtn').title = T.borrarUltimo;
   $('clearBtn').textContent = T.vaciar;
-  $('stepBtn').innerHTML = '<span aria-hidden="true">⏯</span> ' + T.paso;
-  $('runBtn').innerHTML = '<span aria-hidden="true">▶</span> ' + T.ejecutar;
+  const ico = d => '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>';
+  $('stepBtn').innerHTML = ico('<path d="M4 4l10 8-10 8z" fill="currentColor"/><path d="M18 4v16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>') + T.paso;
+  $('runBtn').innerHTML = ico('<path d="M6 4l14 8-14 8z" fill="currentColor"/>') + T.ejecutar;
   $('btnVoz').setAttribute('aria-label', T.escuchar); $('btnVoz').title = T.escuchar;
   $('replayBtn').textContent = T.repetir; $('nextBtn').textContent = T.siguiente;
   $('finalTitle').textContent = T.finalTitulo; $('finalBtn').textContent = T.jugarDeNuevo; $('finalInicio').textContent = T.inicio;
