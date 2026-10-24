@@ -1,0 +1,21 @@
+/* Colores de la interfaz. Más contraste que el HTML publicado (las netbooks tienen pantallas lavadas),
+   con la misma identidad: verde azulado, verde hoja, gris pizarra y dorado.
+   Los colores del tablero (baldosas y rocas) vienen de cada mundo (src/mundos/). */
+:root{
+  --bg:#E6F2E4; --surface:#FFFFFF; --ink:#16212A; --muted:#3D4C55; --line:#A9BDB1; --line-fuerte:#6F8679;
+  --tile:#EAD7AE; --tile2:#DCC38F; --rock:#8C806C; --rock2:#5B5244;
+  --teal:#0B7F6C; --teal-claro:#12A189; --leaf:#23803F; --slate:#4A5568; --sun:#F2B33D; --sun-oscuro:#9A6300;
+  --bad:#B3332D; --good:#1C6B3A;
+  --sun-suave:rgba(242,179,61,.22); --bad-suave:rgba(179,51,45,.2); --bad-velo:rgba(179,51,45,.16);
+  --emoji:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131B20; --surface:#1C272E; --ink:#EEF4F5; --muted:#B4C3CA; --line:#3A4C57; --line-fuerte:#6A8290;
+    --bad:#F08A82; --good:#7BE0A0; --sun-oscuro:#F2B33D;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131B20; --surface:#1C272E; --ink:#EEF4F5; --muted:#B4C3CA; --line:#3A4C57; --line-fuerte:#6A8290;
+  --bad:#F08A82; --good:#7BE0A0; --sun-oscuro:#F2B33D;
+}

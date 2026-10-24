@@ -1,0 +1,38 @@
+/* Pantalla de inicio: título, el personaje y una tarjeta grande por mundo. */
+.inicio{height:100%;overflow:auto;padding:14px 16px 24px;display:flex;flex-direction:column;gap:14px;max-width:1240px;margin:0 auto}
+.inicio-cab{display:flex;align-items:center;gap:14px}
+.inicio-cab>div:nth-child(2){flex:1;min-width:0}
+.inicio-heroe{width:84px;height:84px;flex:none}
+.inicio-heroe svg{width:100%;height:100%;display:block}
+.inicio h1{margin:0;font-size:2rem;font-weight:800;line-height:1.05}
+.inicio-sub{margin:2px 0 0;font-size:1.25rem;font-weight:700;color:var(--muted)}
+@media (max-width:480px){
+  .inicio h1{font-size:1.55rem}
+  .inicio-sub{font-size:1.05rem}
+  .inicio-heroe{width:60px;height:60px}
+}
+.mundos{display:grid;grid-template-columns:1fr;gap:14px}
+@media (min-width:760px){.mundos{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tarjeta-mundo{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:3px solid var(--line-fuerte);border-radius:22px;padding:12px;box-shadow:0 6px 0 var(--line)}
+.dibujo-mundo{width:100%;height:auto;display:block;border-radius:14px}
+.datos-mundo h2{margin:0;font-size:1.9rem;font-weight:800;line-height:1}
+.tachos-mundo{margin:4px 0 0;display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-weight:700;color:var(--muted)}
+.mini-tacho{width:30px;height:30px;display:inline-block}
+.mini-tacho svg{width:100%;height:100%;display:block}
+.tachos-mundo span:last-child{margin-left:4px}
+.avance-mundo{margin:6px 0 4px;font-weight:800;font-size:1.05rem;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.estrellas-mundo{color:var(--sun-oscuro)}
+.barra-avance{display:block;height:12px;border-radius:999px;background:var(--line);overflow:hidden;border:1px solid var(--line-fuerte)}
+.barra-avance span{display:block;height:100%;background:linear-gradient(90deg,var(--sun),var(--leaf))}
+.modos-mundo{display:flex;gap:10px;margin-top:auto}
+.btn-modo{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:96px;border-radius:18px;border:3px solid var(--teal);background:var(--surface);color:var(--teal);font-weight:800;font-size:1.15rem;box-shadow:0 4px 0 var(--teal);padding:6px}
+.btn-modo svg{width:48px;height:48px}
+.btn-modo.modo-mover{background:var(--teal);color:#fff}
+.btn-modo:active{transform:translateY(3px);box-shadow:0 1px 0 var(--teal)}
+.inicio .menu-btn{align-self:flex-start}
+@media (max-height:720px) and (min-width:760px){
+  .inicio{gap:10px;padding-top:10px}
+  .inicio-heroe{width:64px;height:64px}
+  .btn-modo{min-height:80px}
+  .btn-modo svg{width:40px;height:40px}
+}

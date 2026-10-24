@@ -1,0 +1,28 @@
+/* Pantalla final: la Tierra feliz girando, el personaje saludando y el vecino en la cárcel. */
+.final{position:fixed;top:0;right:0;bottom:0;left:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));text-align:center;color:#fff;background:radial-gradient(circle at 50% 42%,#20457d,#0a1328 72%);overflow:auto}
+.final::before{content:"";position:absolute;left:0;top:0;width:2px;height:2px;border-radius:50%;background:#fff;box-shadow:8vw 12vh #fff,22vw 6vh #cfe,35vw 18vh #fff,48vw 4vh #fff,62vw 14vh #ffd,78vw 8vh #fff,90vw 20vh #fff,5vw 40vh #fff,15vw 62vh #cfe,28vw 84vh #fff,12vw 92vh #fff,70vw 88vh #fff,84vw 70vh #ffd,94vw 48vh #fff,88vw 34vh #fff,58vw 94vh #cfe,40vw 76vh #fff,3vw 76vh #fff,96vw 90vh #fff,52vw 30vh #fff;pointer-events:none}
+.final h2{font-size:2.6rem;font-weight:800;margin:0;line-height:1}
+.final p{max-width:32em;margin:0;font-size:1.1rem;color:#e3eeff}
+.final .btn{background:#F2B33D;color:#1B2A33}
+.final .ghost-final{background:transparent;color:#fff;border:2px solid #fff}
+.final-botones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.earth-wrap{position:relative;width:52vh;max-width:78vw;max-height:420px;flex:none}
+.earth-wrap::before{content:"";display:block;padding-top:100%}
+.earth{position:absolute;top:0;left:0;width:100%;height:100%;display:block;animation:float 4s ease-in-out infinite}
+.earth .spin{animation:scroll 16s linear infinite}
+.earth .clouds{animation:scroll 27s linear infinite}
+.earth .eye{animation:blink 4s infinite;transform-box:fill-box;transform-origin:center}
+.spark{position:absolute;font-size:1.8rem;animation:twinkle 1.8s ease-in-out infinite}
+.final-robot{position:absolute;width:24%;right:-6%;bottom:0;animation:wave 1.2s ease-in-out infinite;transform-origin:50% 90%}
+.final-robot svg{width:100%;height:auto;display:block}
+.final-robot .bob{animation:bob 1.6s ease-in-out infinite;transform-box:fill-box}
+.jail{position:absolute;left:-12%;bottom:-2%;width:30%;height:37.5%}
+.jail-sign{position:absolute;top:0;left:50%;transform:translateX(-50%);background:#C2433D;color:#fff;font-weight:800;font-size:.85rem;letter-spacing:.06em;padding:0 8px;border-radius:6px;white-space:nowrap;z-index:2}
+.jail-cell{position:absolute;left:0;right:0;top:9%;bottom:16%;background:#6B7686;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.jail-cell .fig{font-size:3rem;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35));line-height:1;animation:sway 2.2s ease-in-out infinite}
+.jail-bars{position:absolute;top:0;left:0;width:100%;height:100%}
+.jail-name{position:absolute;bottom:0;left:50%;transform:translateX(-50%);background:#fff;color:#1B2A33;font-weight:800;font-size:1rem;padding:0 10px;border-radius:8px;border:2px solid #C2433D;white-space:nowrap}
+@media (max-width:480px){
+  .final h2{font-size:2rem}
+  .jail-cell .fig{font-size:2.2rem}
+}
