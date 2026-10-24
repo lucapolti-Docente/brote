@@ -1,4 +1,4 @@
-/* Sonidos del juego: cortos, suaves y sin archivos (se arman con el navegador, así funcionan sin internet).
+/* Sonidos del juego: cortos, suaves y sin archivos (se arman con el navegador).
    Cada sonido es una lista de notas: f = frecuencia (Hz), hasta = frecuencia final (para que suba o baje),
    t = cuándo empieza (segundos), d = cuánto dura, onda = sine | triangle | square, vol = volumen (0 a 1). */
 export const SONIDOS = {

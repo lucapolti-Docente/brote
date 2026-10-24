@@ -1,7 +1,7 @@
 # Brote 2 · Decisiones para revisar
 
 **Dirección publicada:** https://lucapolti-docente.github.io/brote/ · Docentes: https://lucapolti-docente.github.io/brote/docentes/
-**Pendrive:** `npm run build:pendrive` → `dist-pendrive/brote.html`
+**Pendrive:** descartado (23/10). Solo se trabaja la página publicada; se sacó `build:pendrive`.
 
 ## ⚠️ Lo más importante
 - **No estaba `originales/brote-proyecto/`** (ni el .zip) en ninguna parte del disco. Busqué en `E:` y en tu usuario. Por eso:
@@ -23,7 +23,7 @@
    5. Emojis con la fuente de respaldo Noto Color Emoji y la pila "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji". **El 🫙 lo reemplacé por un SVG propio**: es un emoji nuevo (2021) que muchas compus no tienen.
    6. Botón **🔊** al lado de "lo que llevás": lee el residuo en la mano y la explicación del último error (o del último acierto). Si la compu no tiene voz, avisa en el cuadro de mensajes.
    7. Playa y Ciudad: tests de que cada residuo tiene tacho y explicación, y de que cada uno va a su lugar en los cuatro lados. El frasco va a la caja azul si el mundo la tiene y si no, al tacho verde.
-5. **Docentes**: `docentes/` con página y `guia-docente.pdf` (3 páginas): cómo usarlo, reglas, mundos y niveles, guía de residuos y modo Programar. Diseño Curricular marcado como **pendiente**. Enlace "Para docentes" en el menú (no aparece en la versión pendrive, que es un solo archivo).
+5. **Docentes**: `docentes/` con página y `guia-docente.pdf` (3 páginas): cómo usarlo, reglas, mundos y niveles, guía de residuos y modo Programar. Diseño Curricular marcado como **pendiente**. Enlace "Para docentes" en el menú.
 6. Dibujo de Juani y su crédito: "Dibujo de Juani" en Configuración y en Ver dibujo.
 
 ## Errores que encontré y arreglé (no estaban en la lista)
@@ -49,7 +49,6 @@
 ## Propuesto (no lo hice porque cambia reglas o contenido)
 - Una acción **"esperar"**: ahora que el nivel no termina hasta que el vecino se va, a veces hay que caminar sin sentido esperando su última tirada.
 - Con 2 tachos se puede adivinar probando los dos (el error solo baja estrellas). Por ejemplo: que el error mande el residuo de vuelta al piso.
-- Sumar la fuente de emojis **adentro** del HTML del pendrive (un recorte con solo los emojis que usamos), para que se vean iguales en todas las netbooks sin internet.
 - Usar "sin repetir" también en el Parque (cambiaría algunos residuos de sus mapas).
 - Mejoras grandes de sonido/animación: música apagada por defecto, confeti al ganar un nivel.
 
@@ -61,5 +60,5 @@
 
 ## Qué probé
 - `npm test`: 85 tests en verde (mapas del Parque = publicado, cada nivel se gana con 150 semillas, el vecino nunca se traba, se llega a todo, Paso = Ejecutar, tachos y frasco por mundo, estrellas, planeta, guardado y migración, sonidos).
-- Navegador real (Chromium), con el **HTML del pendrive abierto con file://**, en 1366×768 y 360×620, tocando botones: inicio → Parque Mover (ganado, 3 estrellas) → recargar y retomar en nivel 2 → Nivel anterior (el planeta no baja) → Playa Programar con Paso y Ejecutar (ganado) → Ciudad Programar (ganado) → Ciudad hasta la pantalla final → Guía, Configuración, Ver dibujo de Planti, 🔊 (y 🔊 en una compu sin voz: avisa). Cero errores de consola. Capturas en `pruebas/nuevo/`.
+- Navegador real (Chromium), con la página armada y con la dirección publicada, en 1366×768 y 360×620, tocando botones: inicio → Parque Mover (ganado, 3 estrellas) → recargar y retomar en nivel 2 → Nivel anterior (el planeta no baja) → Playa Programar con Paso y Ejecutar (ganado) → Ciudad Programar (ganado) → Ciudad hasta la pantalla final → Guía, Configuración, Ver dibujo de Planti, 🔊 (y 🔊 en una compu sin voz: avisa). Cero errores de consola. Capturas en `pruebas/nuevo/`.
 - No pude escuchar el sonido ni la voz: la prueba es automática.

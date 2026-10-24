@@ -35,8 +35,6 @@ function textosFijos(){
   $('finalTitle').textContent = T.finalTitulo; $('finalBtn').textContent = T.jugarDeNuevo; $('finalInicio').textContent = T.inicio;
   $('jailSign').textContent = T.carcel;
   todos('[data-abre-menu]').forEach(b => b.setAttribute('aria-label', T.menu));
-  // La página para docentes viene con la versión publicada; el HTML del pendrive va solo.
-  if (import.meta.env.MODE !== 'pendrive') document.querySelector('[data-accion="docentes"]').hidden = false;
   V.textosMenu();
   V.textosConfig();
 }

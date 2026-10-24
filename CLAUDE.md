@@ -6,11 +6,11 @@ Este CLAUDE.md manda por sobre el general de `juegos-docente/`: acá sí hay npm
 
 ## Contexto de uso
 - Netbooks escolares (Sarmiento, pantallas con colores lavados, 1366×768) y celulares (360×620: ahí se puede scrollear).
-- Se publica en GitHub Pages (GitHub Actions) y se usa sin internet desde un pendrive con `npm run build:pendrive` (un solo HTML, `dist-pendrive/brote.html`, que anda con doble clic).
+- Se usa solo como página publicada en GitHub Pages (GitHub Actions). La versión pendrive se descartó (decisión de Luca, 23/10/2026).
 - `original/brote-limpia-el-planeta.html` es el juego publicado de partida. No se edita: es la referencia para comparar.
 
 ## Decisiones que no hay que cambiar
-- Tiene que funcionar offline y sin login. La versión de un solo archivo para pendrive sigue haciendo falta.
+- Sin login ni cuentas. Solo página web: no hace falta versión de un solo archivo ni que ande sin internet.
 - Textos cortos con voseo y modo mayúsculas por CSS.
 - Al equivocarse, el residuo sigue en la mano y siempre se explica por qué.
 - Los tornados anuncian su próxima casilla y el vecino nunca hace daño.
@@ -31,5 +31,5 @@ Este CLAUDE.md manda por sobre el general de `juegos-docente/`: acá sí hay npm
 ## Antes de dar algo por terminado
 - `npm test`: cada nivel se gana con muchas semillas, se llega a todo, el vecino nunca se traba, Paso = Ejecutar.
 - Revisar en 1366×768 y 360×620 sin errores en la consola, tocando los botones.
-- Si cambia algo del armado, probar `npm run build:pendrive` abriendo el archivo con doble clic.
+- Si cambia algo del armado, probar `npm run build` y, después de publicar, la dirección real.
 - Si cambian mundos o residuos: `node herramientas/docentes.mjs` y volver a sacar el PDF.

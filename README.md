@@ -11,7 +11,6 @@ npm install
 npm run dev             # para probar mientras se cambia
 npm test                # tests de reglas y niveles
 npm run build           # versión para GitHub Pages (dist/)
-npm run build:pendrive  # un solo archivo: dist-pendrive/brote.html (doble clic, sin internet)
 node herramientas/docentes.mjs   # rearma public/docentes/index.html con los datos del juego
 ```
 Cada `push` a `main` corre los tests y publica en Pages (`.github/workflows/deploy.yml`).
