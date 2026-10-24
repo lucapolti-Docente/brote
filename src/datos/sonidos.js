@@ -12,6 +12,9 @@ export const SONIDOS = {
   escudo:   [{ f:700, hasta:1100, d:.22, onda:'sine', vol:.07 }],
   vencer:   [{ f:900, hasta:300, d:.2, onda:'triangle', vol:.08 }, { f:1200, t:.12, d:.1, onda:'sine', vol:.05 }],
   tira:     [{ f:380, hasta:260, d:.14, onda:'sine', vol:.07 }],                         // el vecino tira basura
+  lavar:    [{ f:900, hasta:500, d:.18, onda:'sine', vol:.05 }, { f:1100, hasta:600, t:.08, d:.16, onda:'sine', vol:.04 }], // agua
+  semaforo: [{ f:740, d:.05, onda:'sine', vol:.05 }],                                    // cambia la luz
+  esperar:  [{ f:520, d:.04, onda:'sine', vol:.05 }, { f:390, t:.12, d:.04, onda:'sine', vol:.05 }], // tic… tac
   aviso:    [{ f:330, d:.1, onda:'sine', vol:.07 }],                                     // cola llena, cola vacía
   ganar:    [{ f:523, d:.1, onda:'triangle', vol:.08 }, { f:659, t:.1, d:.1, onda:'triangle', vol:.08 },
              { f:784, t:.2, d:.22, onda:'triangle', vol:.09 }],
@@ -23,5 +26,6 @@ export const SONIDOS = {
 export const SONIDO_DE = {
   mueve:'mover', borde:'choque', roca:'choque', vecinoBloquea:'choque', tachoVacio:'choque',
   levanta:'levantar', entrega:'entregar', mal:'mal', golpe:'golpe', escudo:'escudo', vence:'vencer',
-  vecinoTira:'tira', gano:'ganar'
+  vecinoTira:'tira', gano:'ganar',
+  sucio:'mal', lava:'lavar', calle:'choque', rojo:'choque', espera:'esperar', semaforo:'semaforo'
 };

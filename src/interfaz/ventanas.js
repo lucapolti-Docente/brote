@@ -1,5 +1,5 @@
 /* Ventanas y menú: Cómo jugar, Guía de residuos, Ver dibujo, Configuración y el menú ☰. */
-import { TACHOS } from '../datos/tachos.js';
+import { infoTacho } from '../datos/tachos.js';
 import { residuo } from '../datos/residuos.js';
 import { PERSONAJES } from '../datos/personajes/index.js';
 import { MUNDOS } from '../mundos/index.js';
@@ -59,7 +59,7 @@ export function abrirAyuda(){
 export function abrirGuia(){
   const m = mundoParaGuia();
   $('guideTitle').textContent = T.guiaTitulo;
-  $('guideBody').innerHTML = m.tachos.map(t => '<div><h3>' + TACHOS[t].guia + '</h3><ul>' +
+  $('guideBody').innerHTML = m.tachos.map(t => '<div><h3>' + infoTacho(t, m).guia + '</h3><p class="que">' + infoTacho(t, m).que + '</p><ul>' +
     m.residuos.filter(id => tachoDe(id, m) === t).map(id => {
       const r = residuo(id);
       return '<li>' + dibujoResiduo(id) + '<span><b>' + Mayuscula(r.nombre) + '</b>: ' + r.porque[t].replace(/^[^:]+: /, '') + '</span></li>';
@@ -75,7 +75,7 @@ export function abrirDibujo(){
   $('sheetTitle').textContent = p.nombre;
   $('sheetCredito').textContent = p.autor ? T.dibujoDe(p.autor) : '';
   $('sheetCredito').hidden = !p.autor;
-  const columna = t => '<section class="sheet-col" style="border-color:' + TACHOS[t].color + '"><h3>' + TACHOS[t].lamina + '</h3><ul>' +
+  const columna = t => '<section class="sheet-col" style="border-color:' + infoTacho(t, m).color + '"><h3>' + infoTacho(t, m).lamina + '</h3><ul>' +
     m.residuos.filter(id => tachoDe(id, m) === t).map(id => '<li><span class="em">' + dibujoResiduo(id) + '</span><span class="nm">' + Mayuscula(residuo(id).nombre) + '</span></li>').join('') +
     '</ul></section>';
   const [a, b, ...resto] = m.tachos;

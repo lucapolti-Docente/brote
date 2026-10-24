@@ -10,3 +10,17 @@ export const PELIG_SVG = '<svg viewBox="0 0 40 40" aria-hidden="true">'+
   '<path d="M20 15 L29 31 H11 Z" fill="#FFD23F" stroke="#5A1410" stroke-width="1.4" stroke-linejoin="round"/>'+
   '<path d="M20 20 v6 M20 28.4 v.4" stroke="#5A1410" stroke-width="2.4" stroke-linecap="round"/>'+
   '</svg>';
+/* Contenedores de la calle de Buenos Aires: verde para reciclables y negro para húmedos (con ruedas y tapa). */
+export const VERDE_CABA_SVG = '<svg viewBox="0 0 40 40" aria-hidden="true">'+
+  '<path d="M6 12 q14 -9 28 0 v3 h-28 z" fill="#14632F"/>'+
+  '<path d="M7 15 h26 l-2 18 h-22 z" fill="#1E8A44"/>'+
+  '<circle cx="12" cy="35" r="3" fill="#222"/><circle cx="28" cy="35" r="3" fill="#222"/>'+
+  '<text x="20" y="29" text-anchor="middle" font-size="12" fill="#fff" font-family="sans-serif">♻</text>'+
+  '</svg>';
+export const NEGRO_CABA_SVG = '<svg viewBox="0 0 40 40" aria-hidden="true">'+
+  '<path d="M6 12 q14 -9 28 0 v3 h-28 z" fill="#111418"/>'+
+  '<path d="M7 15 h26 l-2 18 h-22 z" fill="#2E343C"/>'+
+  '<rect x="12" y="19" width="16" height="3" rx="1.5" fill="#5B6470"/>'+
+  '<circle cx="12" cy="35" r="3" fill="#000"/><circle cx="28" cy="35" r="3" fill="#000"/>'+
+  '<path d="M15 26 q5 4 10 0" stroke="#8A939E" stroke-width="2" fill="none" stroke-linecap="round"/>'+
+  '</svg>';

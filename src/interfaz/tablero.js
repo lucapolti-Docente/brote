@@ -2,7 +2,8 @@
    Cada pieza es un div ubicado con --r y --c (fila y columna). Las transiciones de CSS hacen el movimiento suave.
    No guarda reglas: lee la partida (src/core/) y se pone igual. */
 import { N, clave } from '../core/index.js';
-import { TACHOS } from '../datos/tachos.js';
+import { infoTacho } from '../datos/tachos.js';
+import { OBSTACULOS, DUCHA_SVG, semaforoSVG } from '../dibujo/escenario.js';
 import { residuo } from '../datos/residuos.js';
 import { SHIELD_SVG } from '../dibujo/svg-original.js';
 import { $, dibujoResiduo } from './dom.js';
@@ -26,14 +27,26 @@ export function armarTablero(){
   b.style.setProperty('--rock', pal.roca); b.style.setProperty('--rock2', pal.roca2);
   for (let r = 0; r < N; r++) for (let c = 0; c < N; c++){
     const d = pieza('cell' + ((r + c) % 2 ? ' alt' : ''), r, c);
-    if (e.rocas.has(clave(r, c))) d.innerHTML = '<span class="rock' + ((r * 3 + c) % 2 ? ' v2' : '') + '"></span>';
+    const k = clave(r, c);
+    if (e.rocas.has(k)){
+      const dib = OBSTACULOS[m.obstaculo];
+      d.innerHTML = dib ? '<span class="obstaculo">' + dib + '</span>' : '<span class="rock' + ((r * 3 + c) % 2 ? ' v2' : '') + '"></span>';
+    }
+    if (e.calle.has(k)) d.className += ' calle';
+    if (e.senda.has(k)){ d.className += ' senda'; d.innerHTML = '<span class="luz"></span><span class="faltan"></span>'; }
     b.appendChild(d);
   }
+  if (e.ducha){
+    const du = pieza('ducha', e.ducha.r, e.ducha.c);
+    du.innerHTML = DUCHA_SVG; du.title = 'Ducha: lava los residuos con arena';
+    b.appendChild(du);
+  }
   e.tachos.forEach(t => {
-    const d = pieza('station tacho-' + t.id, t.r, t.c);
+    const d = pieza('station tacho-' + t.id + (t.r === 8 ? ' abajo' : ''), t.r, t.c);
     d.dataset.tacho = t.id;
-    d.innerHTML = TACHOS[t.id].svg + '<span class="badge"></span>';
-    d.title = TACHOS[t.id].nombre;
+    const info = infoTacho(t.id, m);
+    d.innerHTML = info.svg + '<span class="badge"></span><span class="cartel" style="background:' + info.color + '">' + info.palabra + '</span>';
+    d.title = info.nombre;
     b.appendChild(d);
   });
   Object.keys(tornadosEl).forEach(k => delete tornadosEl[k]);
@@ -69,8 +82,9 @@ function dibujarResiduos(){
   e.residuos.forEach(it => {
     if (!it.vivo || it.id === e.mano) return;
     const el = pieza('item', it.r, it.c);
-    el.innerHTML = dibujoResiduo(it.tipo);
-    el.title = residuo(it.tipo).nombre;
+    el.innerHTML = dibujoResiduo(it.tipo) + (it.arena ? '<span class="arena" aria-hidden="true"></span>' : '');
+    el.classList.toggle('con-arena', !!it.arena);
+    el.title = residuo(it.tipo).nombre + (it.arena ? ' (con arena)' : '');
     b.insertBefore(el, primerTacho);
   });
   e.escudos.forEach(s => {
@@ -90,7 +104,18 @@ export function sincronizar(){
   const mano = e.mano === null ? null : e.residuos.find(x => x.id === e.mano);
   robotEl.classList.toggle('carrying', !!mano);
   const burbuja = robotEl.querySelector('.bubble');
-  if (burbuja) burbuja.innerHTML = mano ? dibujoResiduo(mano.tipo) : '';
+  if (burbuja){
+    burbuja.innerHTML = mano ? dibujoResiduo(mano.tipo) + (mano.arena ? '<span class="arena" aria-hidden="true"></span>' : '') : '';
+    burbuja.classList.toggle('con-arena', !!(mano && mano.arena));
+  }
+  if (e.semaforo){
+    const verde = e.semaforo.verde;
+    Array.prototype.forEach.call(tablero().querySelectorAll('.senda'), s => {
+      s.classList.toggle('verde', verde); s.classList.toggle('rojo', !verde);
+      s.querySelector('.luz').innerHTML = semaforoSVG(verde);
+      s.querySelector('.faltan').textContent = e.semaforo.faltan;
+    });
+  }
   dibujarResiduos();
   const vivos = new Set(e.tornados.map(s => s.id));
   Object.keys(tornadosEl).forEach(id => {
@@ -116,7 +141,7 @@ export function sincronizar(){
       const antes = +humanoEl.style.getPropertyValue('--c');
       if (e.vecino.c !== antes) humanoEl.classList.toggle('right', e.vecino.c > antes);
       ubicar(humanoEl, e.vecino.r, e.vecino.c);
-      humanoEl.querySelector('.badge').textContent = 10 - (e.vecino.pasos % 10);
+      humanoEl.querySelector('.badge').textContent = e.vecino.cada - e.vecino.desdeTirada;
       humanoEl.querySelector('.name').textContent = E.nombre;
       humanoEl.title = T.vecinoTitulo(E.nombre);
     }

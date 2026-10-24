@@ -10,7 +10,7 @@ import { $, esperar, reducido } from './dom.js';
 import { E } from './estado.js';
 import { sonar } from './sonido.js';
 
-const FLECHA = { up:'↑', down:'↓', left:'←', right:'→' };
+const FLECHA = { up:'↑', down:'↓', left:'←', right:'→', wait:'✋' };
 let mostrarEventos = null, decirEnPantalla = null;
 /* juego.js le pasa sus funciones (así no se importan en círculo). */
 export function conectarPrograma(fns){ mostrarEventos = fns.mostrarEventos; decirEnPantalla = fns.decirEnPantalla; }

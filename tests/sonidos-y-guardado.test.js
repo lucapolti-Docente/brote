@@ -53,11 +53,11 @@ describe('guardado', () => {
     const G = crearGuardado(() => s);
     G.progreso({ parque:{ nivel:4, max:6, completo:false, estrellas:{ 1:3, 2:2 } } });
     expect(JSON.parse(s.datos[CLAVES.progreso]).version).toBe(1);
-    expect(progresoDe(G.leer().progreso.parque, 9)).toEqual({ nivel:4, max:6, completo:false, estrellas:{ 1:3, 2:2 } });
+    expect(progresoDe(G.leer().progreso.parque, 9)).toEqual({ nivel:4, max:6, completo:false, estrellas:{ 1:3, 2:2 }, vioPres:false });
   });
   it('descarta lo que no sirve y no se rompe si no hay localStorage', () => {
-    expect(progresoDe({ nivel:40, max:'x', estrellas:{ 1:7, 2:3, 99:3 } }, 9)).toEqual({ nivel:9, max:9, completo:false, estrellas:{ 2:3 } });
-    expect(progresoDe(null, 3)).toEqual({ nivel:1, max:1, completo:false, estrellas:{} });
+    expect(progresoDe({ nivel:40, max:'x', estrellas:{ 1:7, 2:3, 99:3 } }, 9)).toEqual({ nivel:9, max:9, completo:false, estrellas:{ 2:3 }, vioPres:false });
+    expect(progresoDe(null, 3)).toEqual({ nivel:1, max:1, completo:false, estrellas:{}, vioPres:false });
     const roto = crearGuardado(() => { throw new Error('bloqueado'); });
     expect(roto.leer()).toMatchObject({ skin:null, mayus:false, sonido:true, progreso:{} });
     expect(roto.skin('gato')).toBe(false);

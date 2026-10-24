@@ -1,4 +1,50 @@
-# Brote 2 · Decisiones para revisar
+# Etapa 2 (23/10): mundos mejorados
+
+## Qué cambió
+- **Progresión 3 + 3 + 3 en los tres mundos**: niveles 1 a 3 solo residuos, 4 a 6 con tornados, 7 a 9 con el vecino y tornados. Playa y Ciudad pasaron de 3 a 9 niveles. En el Parque solo cambió el nivel 3, que ya no tiene tornado (las rocas y los residuos son los mismos, lo comprueba un test).
+- **Vecino**: tiraba cada 10 pasos y se iba enseguida (en el paso 30 a 50 de niveles de unos 120 a 150 pasos). Ahora tira **cada 20 pasos**, **2, 3 y 4 veces** en los niveles 7, 8 y 9, y anda por el mapa hasta la mitad del nivel, más o menos (se va entre el paso 40 y el 82). Si ya juntaste todo y le falta tirar, tira enseguida: nunca hay que caminar esperándolo. Lo medí con 300 partidas por nivel.
+- **Playa: caja azul + la ducha (limpio y seco)**. Algunos residuos tienen arena (se ven con granitos). Para el tacho verde o la caja azul primero hay que pasar por la ducha 🚿. Si se entregan sucios, es un error, el residuo sigue en la mano y se explica por qué. Lo del compactador no se lava. Lo que tira el vecino a veces tiene arena. Obstáculos: castillos de arena.
+- **Ciudad: contenedor rojo + la calle con semáforo**. Una calle a lo ancho del tablero se cruza solo por las dos sendas peatonales y con el semáforo en verde (cambia cada 4 turnos; un número muestra cuánto falta). Botón **✋ Esperar** en el centro de las flechas, que en Programar es una instrucción más (tecla E o espacio). Si ya estás sobre la senda cuando se pone en rojo, terminás de cruzar. Tornados y vecino no cruzan la calle. Obstáculos: conos.
+- **Contenedores de Buenos Aires** (verificado en buenosaires.gob.ar): en la Ciudad el tacho verde es el **contenedor verde** (reciclables limpios y secos) y el compactador es el **contenedor negro** (húmedos). Pilas y lamparitas: "en la Ciudad se llevan a un Punto Verde". Remedios vencidos: "se devuelven en la farmacia" (no los reciben los Puntos Verdes).
+- **Reciclar, reutilizar y peligroso, más claros**: una frase por tacho que se repite en la guía, en la presentación y en la guía docente. Cada tacho lleva un cartel en el tablero (RECICLAR, BASURA o HÚMEDOS, REUTILIZAR, PELIGROSO). Reescribí las explicaciones de cada residuo con la misma idea: lo reciclable "se derrite y se hace algo nuevo"; lo reutilizable "se usa tal como está".
+- **Presentación animada de los tachos (GSAP)**, la primera vez que se entra a cada mundo (después aparece "Cómo jugar") y desde el menú **🎬 Ver los tachos**:
+  - **Parque:** reciclar (la botella entra y sale una botella y una remera) y compactar (prensa y cubo).
+  - **Playa:** reutilizar (el frasco sale igual, con una plantita) frente a reciclar (la botella de vidrio se derrite y sale una nueva).
+  - **Ciudad:** la pila al contenedor rojo, con candado y camión al Punto Verde, frente a la pila en el contenedor negro (mancha la tierra, la flor se marchita, cruz roja).
+  - Con "reducir movimiento" se muestra quieta.
+- **Docentes**: saqué el enlace del menú. `docentes/` sigue publicada en la misma dirección y la guía (4 páginas) explica los mundos nuevos.
+- En la pantalla de inicio cada mundo muestra su desafío (🌪️, 🚿 o 🚦).
+
+## Ideas de contenido: dónde quedaron
+| Idea | Dónde |
+|---|---|
+| Limpio y seco | **Playa**: la ducha |
+| Reutilizar | **Playa**: caja azul y animación. Elegir en qué transformar el frasco queda para otra aplicación |
+| Contenedores de la Ciudad | **Ciudad**: contenedor verde y contenedor negro |
+| Compost | Propuesto: un 4.º mundo "Huerta" u otra aplicación |
+| Materiales | Otra aplicación (clasifica por otro criterio) |
+| Proceso | Otra aplicación (minijuego de ordenar pasos) |
+
+## Decisiones menores
+- Esperar está en todos los niveles de la Ciudad, no solo en los que tienen calle (así no aparece y desaparece).
+- Entregar un residuo con arena cuenta como error (baja estrellas y frena el programa), igual que el tacho equivocado.
+- La ducha nunca queda pegada a un tacho ni en el centro. Los tornados no la pisan.
+- Mientras el semáforo está en rojo, chocar contra la senda no gasta turno (como chocar contra una roca). Para que pase el tiempo hay que usar Esperar.
+
+## Qué probé
+- 132 tests en verde. Cada nivel de cada mundo se gana con 150 semillas y además corrí 54.000 partidas simuladas: todas terminan. También hay tests de la ducha, el semáforo, Esperar (igual en Paso que en Ejecutar) y el ritmo del vecino.
+- Navegador (compu y celular), tocando botones:
+  - Parque 1 en Mover, con su presentación: ganado.
+  - Recargar y retomar: la presentación no vuelve a salir.
+  - Playa 2 en Programar con Paso, lavando en la ducha: ganado.
+  - Ciudad 2 en Mover, esperando el semáforo: ganado.
+  - Ciudad 9 hasta la pantalla final.
+  - "Ver los tachos" desde el menú y el menú sin enlace a docentes.
+  - Cero errores de consola.
+
+---
+
+# Etapa 1 · Decisiones para revisar
 
 **Dirección publicada:** https://lucapolti-docente.github.io/brote/ · Docentes: https://lucapolti-docente.github.io/brote/docentes/
 **Pendrive:** descartado (23/10). Solo se trabaja la página publicada; se sacó `build:pendrive`.

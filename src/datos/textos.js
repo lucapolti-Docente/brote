@@ -2,7 +2,7 @@
    Voseo, frases cortas. El modo TODO EN MAYÚSCULAS lo hace el CSS: acá se escribe normal.
    Las funciones reciben lo que cambia (nombres, números) y arman la frase. */
 import { RESIDUOS } from './residuos.js';
-import { TACHOS } from './tachos.js';
+import { infoTacho } from './tachos.js';
 
 const R = id => RESIDUOS.find(r => r.id === id);
 /* "la lata", "el diario" */
@@ -62,22 +62,30 @@ export const T = {
   escudo:'¡Brote agarró el escudo antitornado! Ahora chocá contra un tornado para deshacerlo.',
   yaTieneEscudo:'Brote ya tiene un escudo puesto. Usalo primero contra un tornado.',
   levanta:id => 'Brote levantó ' + conArticulo(id) + '. ¿Adónde ' + lo(id) + ' llevás?',
+  levantaArena:id => 'Brote levantó ' + conArticulo(id) + '. ¡Tiene arena! Para reciclar o reutilizar tiene que estar limpi' + (R(id).genero === 'f' ? 'a' : 'o') + ' y sec' + (R(id).genero === 'f' ? 'a' : 'o') + ': primero pasá por la ducha 🚿.',
+  sucio:id => '✖ ¡' + Mayuscula(conArticulo(id)) + ' tiene arena! Así no se puede reciclar ni reutilizar. Lleva' + lo(id) + ' primero a la ducha 🚿.',
+  lava:id => '🚿 ¡Listo! ' + Mayuscula(conArticulo(id)) + ' quedó limpi' + (R(id).genero === 'f' ? 'a' : 'o') + '. Ahora sí, al tacho.',
+  ducha:id => id ? '🚿 ' + Mayuscula(conArticulo(id)) + ' ya está limpi' + (R(id).genero === 'f' ? 'a' : 'o') + '.' : '🚿 La ducha sirve para lavar los residuos con arena.',
+  calle:'Por la calle pasan autos: cruzá por la senda peatonal, la de rayas blancas.',
+  rojo:faltan => '🚦 Semáforo en rojo: esperá. Cambia en ' + faltan + (faltan === 1 ? ' turno.' : ' turnos.') + ' Tocá ✋ Esperar.',
+  espera:'✋ Brote espera un turno.',
+  esperar:'Esperar',
   manoLlena:'Brote ya lleva algo. Entregalo antes de levantar otro residuo.',
-  tachoVacio:tacho => TACHOS[tacho].vacio,
-  mal:(id, correcto) => '✖ No va ahí. ' + Mayuscula(conArticulo(id)) + ' ' + porque(id, correcto) + ' Lleva' + lo(id) + ' ' + TACHOS[correcto].al + '.',
-  entrega:(id, tacho) => '✔ ¡Bien! ' + Mayuscula(conArticulo(id)) + ' ' + porque(id, tacho) +
-    (TACHOS[tacho].cubo ? ' Brote ' + lo(id) + ' compactó en un cubo.' : ''),
+  tachoVacio:(tacho, mundo) => infoTacho(tacho, mundo).vacio,
+  mal:(id, correcto, mundo) => '✖ No va ahí. ' + Mayuscula(conArticulo(id)) + ' ' + porque(id, correcto) + ' Lleva' + lo(id) + ' ' + infoTacho(correcto, mundo).al + '.',
+  entrega:(id, tacho, mundo) => '✔ ¡Bien! ' + Mayuscula(conArticulo(id)) + ' ' + porque(id, tacho) +
+    (infoTacho(tacho, mundo).cubo ? ' Brote ' + lo(id) + ' compactó en un cubo.' : ''),
   esperaVecino:(nombre, faltan) => '¡Ojo! ' + nombre + ' todavía va a tirar basura ' + (faltan === 1 ? 'una vez más' : faltan + ' veces más') + '. Seguí caminando y juntala.',
   golpeSolto:id => '¡Tornado! Brote soltó ' + conArticulo(id) + ' y el viento se ' + lo(id) + ' llevó a otro lugar.',
   golpe:'¡Tornado! Brote quedó mareado y perdió 2 pasos.',
   vence:quedan => '¡Pum! Brote usó el escudo y deshizo el tornado.' + (quedan ? ' Todavía queda otro: buscá el otro escudo.' : ' Ya no quedan tornados en este nivel.'),
-  vecinoTira:(nombre, id, seVa) => '¡' + nombre + ' tiró ' + conArticulo(id) + ' al piso! Hay basura nueva para recoger.' + (seVa ? ' Después se fue a su casa.' : ''),
+  vecinoTira:(nombre, id, seVa, arena) => '¡' + nombre + ' tiró ' + conArticulo(id) + ' al piso!' + (arena ? ' Tiene arena.' : '') + ' Hay basura nueva para recoger.' + (seVa ? ' Después se fue a su casa.' : ''),
   vecinoTitulo:nombre => nombre + ', el vecino que tira basura',
 
   // Fin de nivel y final
   nivelCompleto:n => '¡Nivel ' + n + ' completado!',
   resumenNivel:(e, nombre) => {
-    const partes = Object.keys(e.porTacho).map(t => e.porTacho[t] + ' ' + TACHOS[t].nombre.toLowerCase());
+    const partes = Object.keys(e.porTacho).map(t => e.porTacho[t] + ' ' + infoTacho(t, e.mundo).nombre.toLowerCase());
     return 'Recogiste ' + e.total + ' residuos en ' + e.pasos + ' pasos (' + partes.join(', ') + '). Errores de decisión: ' + e.errores +
       '. Golpes de tornado: ' + e.golpes + '. Tornados vencidos: ' + e.vencidos + '.' + (e.tiradas ? ' ' + nombre + ' tiró ' + e.tiradas + ' residuos.' : '');
   },
@@ -88,11 +96,17 @@ export const T = {
   carcel:'CÁRCEL',
   jugarDeNuevo:'Jugar de nuevo', inicio:'Inicio',
 
+  // Presentación de los tachos
+  presTitulo:conArticulo => 'Los tachos ' + (conArticulo.indexOf('el ') === 0 ? 'del ' + conArticulo.slice(3) : 'de ' + conArticulo),
+  presOtraVez:'Ver otra vez',
+  presListo:'¡A jugar!',
+  presPeligroMal:'Si lo peligroso va a la basura común, contamina la tierra y el agua: las plantas y los animales se enferman.',
+
   // Menú
   menu:'Menú',
   menuItems:{ inicio:'🏠 Inicio', comoJugar:'❓ Cómo jugar', guia:'📘 Guía de residuos', dibujo:'🎨 Ver dibujo', anterior:'⏮️ Nivel anterior',
               reiniciar:'🔄 Reiniciar nivel', saltar:'⏭️ Saltar nivel', sonidoSi:'🔊 Sonido: sí', sonidoNo:'🔇 Sonido: no',
-              config:'⚙️ Configuración', docentes:'👩‍🏫 Para docentes' },
+              config:'⚙️ Configuración', presentacion:'🎬 Ver los tachos' },
 
   // Configuración
   configPersonaje:'Personaje',
@@ -114,7 +128,7 @@ export const T = {
 
 /* La ayuda de "Cómo jugar". Se arma con los tachos del mundo en el que se está jugando. */
 export function comoJugar(mundo, nombre){
-  const tachos = mundo.tachos.map(t => TACHOS[t].nombre.toLowerCase() + ' (' + { reciclable:'izquierda', noReciclable:'derecha', reutilizable:'arriba', peligroso:'abajo' }[t] + ')');
+  const tachos = mundo.tachos.map(t => infoTacho(t, mundo).nombre.toLowerCase() + ' (' + { reciclable:'izquierda', noReciclable:'derecha', reutilizable:'arriba', peligroso:'abajo' }[t] + ')');
   const conTornado = mundo.niveles.findIndex(n => n.tornados) + 1;
   const conVecino = mundo.niveles.findIndex(n => n.vecino) + 1;
   return {
@@ -122,10 +136,12 @@ export function comoJugar(mundo, nombre){
     pasos:[
       '<b>Recogé:</b> mové a Brote y pasá sobre un residuo para levantarlo. Lleva uno por vez.',
       '<b>Decidí:</b> cada residuo va a su tacho: ' + tachos.join(', ') + '. Para entregar, chocá contra el tacho.' +
-        (mundo.tachos.includes('noReciclable') ? ' El compactador aplasta la basura en un cubo.' : ''),
+        (infoTacho('noReciclable', mundo).cubo ? ' El compactador aplasta la basura en un cubo.' : ''),
       conTornado ? '<b>Esquivá:</b> las rocas bloquean el paso. Desde el nivel ' + conTornado + ' aparecen tornados que se mueven con cada paso tuyo. El círculo punteado rojo con una flecha muestra adónde va a ir cada tornado. Si te alcanza, Brote suelta lo que lleva.' : '<b>Esquivá:</b> las rocas bloquean el paso.',
       conTornado ? '<b>Vencé tornados:</b> agarrá el escudo dorado ⚡ y chocá contra un tornado para deshacerlo. Cada escudo sirve para un tornado.' : '',
       conVecino ? '<b>Ojo con ' + nombre + ':</b> desde el nivel ' + conVecino + ' aparece ' + nombre + ' 🚶, un vecino que camina por el mapa y pasa por encima de la basura. No te hace daño, pero cada 10 pasos tira basura nueva. El número rojo muestra cuántos pasos le faltan. El nivel termina cuando juntaste todo y ' + nombre + ' ya se fue.' : '',
+      mundo.ducha ? '<b>Limpio y seco:</b> algunos residuos tienen arena. Para el tacho verde o la caja azul, primero pasá por la ducha 🚿. Lo que va al compactador no hace falta lavarlo.' : '',
+      mundo.calle ? '<b>Cruzá la calle:</b> solo por la senda peatonal (rayas blancas) y con el semáforo en verde 🚦. El número muestra cuántos turnos faltan para que cambie. Con ✋ <b>Esperar</b>, Brote se queda quieto un turno.' : '',
       '<b>Programá:</b> en el modo Programar armás una lista de instrucciones. <b>Ejecutar</b> las cumple todas; <b>Paso</b>, de a una. Si Brote choca, te dice en qué instrucción fue.',
       '<b>🔊 Escuchar:</b> lee en voz alta lo que llevás y por qué va en cada tacho.'
     ].filter(Boolean),

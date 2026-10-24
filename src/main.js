@@ -12,6 +12,7 @@ import * as Programa from './interfaz/programa.js';
 import * as V from './interfaz/ventanas.js';
 import { ponerPersonaje } from './interfaz/tablero.js';
 import { sonar } from './interfaz/sonido.js';
+import * as Presentacion from './interfaz/presentacion.js';
 
 const DIR_TECLA = { ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right', w:'up', s:'down', a:'left', d:'right' };
 const ETIQUETA = { up:T.arriba, down:T.abajo, left:T.izquierda, right:T.derecha };
@@ -50,6 +51,8 @@ function conectar(){
 
   // Flechas en pantalla, teclado y deslizar.
   todos('.dpad [data-dir]').forEach(b => b.addEventListener('click', () => flecha(b.dataset.dir)));
+  // ✋ Esperar (solo en los mundos que lo tienen): en Mover espera un turno, en Programar se agrega a la lista.
+  $('dpadCenter').addEventListener('click', () => { if (E.partida && E.partida.puedeEsperar) flecha('wait'); });
   document.addEventListener('keydown', ev => {
     if (ev.target && ev.target.tagName === 'INPUT') return;
     if (ev.key === 'Escape'){
@@ -57,7 +60,8 @@ function conectar(){
       ['helpOv', 'guideOv', 'sheetOv'].forEach(id => { if (!$(id).hidden) V.cerrar(id); });
       return;
     }
-    const dir = DIR_TECLA[ev.key] || DIR_TECLA[(ev.key || '').toLowerCase()];
+    let dir = DIR_TECLA[ev.key] || DIR_TECLA[(ev.key || '').toLowerCase()];
+    if ((ev.key === ' ' || ev.key === 'e' || ev.key === 'E') && E.partida && E.partida.puedeEsperar && !(document.activeElement && document.activeElement.tagName === 'BUTTON')) dir = 'wait';
     if (dir && !E.modal && E.pantalla === 'juego'){ ev.preventDefault(); flecha(dir); return; }
     const enBoton = document.activeElement && document.activeElement.tagName === 'BUTTON';
     if (E.pantalla === 'juego' && E.modo === 'programar' && !E.modal && !enBoton){
@@ -96,7 +100,7 @@ function conectar(){
     inicio:mostrarInicio, comoJugar:V.abrirAyuda, guia:V.abrirGuia, dibujo:V.abrirDibujo,
     anterior:Juego.nivelAnterior, reiniciar:Juego.reiniciarNivel, saltar:Juego.saltarNivel,
     sonido:() => { E.sonido = !E.sonido; Guardado.sonido(E.sonido); V.textosMenu(); sonar('tecla'); },
-    config:V.alternarConfig, docentes:() => {}
+    config:V.alternarConfig, presentacion:() => Presentacion.mostrar(E.mundo || MUNDOS[0].id)
   };
   todos('#menu [data-accion]').forEach(b => b.addEventListener('click', () => {
     const a = b.dataset.accion;
@@ -127,6 +131,8 @@ function conectar(){
   $('nextBtn').addEventListener('click', Juego.siguienteNivel);
   $('finalBtn').addEventListener('click', Juego.jugarDeNuevo);
   $('finalInicio').addEventListener('click', mostrarInicio);
+  $('presOtraVez').addEventListener('click', Presentacion.otraVez);
+  $('presCerrar').addEventListener('click', Presentacion.detener);
 }
 
 leerGuardado();

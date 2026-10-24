@@ -1,0 +1,49 @@
+/* Lo nuevo de cada mundo: obstáculos con dibujo, calle y senda con semáforo, ducha, arena, carteles de los tachos,
+   botón ✋ Esperar y la presentación animada de los tachos. */
+.obstaculo{position:absolute;top:6%;right:6%;bottom:6%;left:6%;display:block;filter:drop-shadow(0 2px 1px rgba(0,0,0,.3))}
+.obstaculo svg{width:100%;height:100%;display:block}
+
+/* Calle: asfalto con línea punteada. Senda: rayas blancas (cebra), con borde verde o rojo según el semáforo. */
+.cell.calle{background:#3B4252;background-image:linear-gradient(90deg,transparent 0 30%,#E9C46A 30% 70%,transparent 70%);background-size:50% 8%;background-repeat:repeat-x;background-position:0 50%}
+.cell.senda{background:#3B4252 repeating-linear-gradient(90deg,#F4F4F4 0 14%,#3B4252 14% 28%);box-shadow:inset 0 0 0 3px #3B4252}
+.cell.senda.verde{box-shadow:inset 0 0 0 4px #2BB24C}
+.cell.senda.rojo{box-shadow:inset 0 0 0 4px #E5372C}
+.senda .luz{position:absolute;top:-38%;left:4%;width:30%;height:62%;z-index:6;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+.senda .luz svg{width:100%;height:100%;display:block}
+.senda .faltan{position:absolute;top:-30%;right:2%;z-index:6;min-width:20px;height:20px;border-radius:999px;background:#16212A;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px;line-height:1}
+.senda.rojo .faltan{background:#B3332D}
+.senda.verde .faltan{background:#1C6B3A}
+
+/* Ducha */
+.ducha{display:flex;align-items:center;justify-content:center;z-index:1;background:rgba(127,196,232,.35);border-radius:22%}
+.ducha svg{width:86%;height:86%}
+.ducha.chorro svg{animation:chorro .7s ease-out}
+@keyframes chorro{0%{transform:scale(1)}30%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+/* Arena: granitos sobre el residuo */
+.arena{position:absolute;left:0;right:0;bottom:4%;height:42%;pointer-events:none;
+  background-image:radial-gradient(circle,#B8893E 0 18%,transparent 22%),radial-gradient(circle,#D9AE62 0 16%,transparent 20%);
+  background-size:28% 50%,22% 46%;background-position:0 0,40% 60%;border-radius:0 0 40% 40%;opacity:.95}
+.item.con-arena .emo,.item.con-arena .emo-svg{filter:sepia(.5)}
+.carry .slot,.robot .bubble{position:relative}
+.carry .slot.con-arena{border-color:#B8893E;background:#F7E7C3}
+
+/* Cartel de cada tacho (RECICLAR, BASURA, REUTILIZAR, PELIGROSO) */
+.station .cartel{position:absolute;left:50%;bottom:-14%;transform:translateX(-50%);color:#fff;font-size:8px;font-size:2.15cqi;font-weight:800;letter-spacing:.02em;line-height:1.15;padding:0 3px;border-radius:5px;white-space:nowrap;z-index:3;box-shadow:0 1px 0 rgba(0,0,0,.3)}
+
+/* ✋ Esperar: el centro de las flechas se vuelve un botón */
+.dpad .center{border:0;background:transparent;padding:0;font:inherit}
+.dpad .center.btn-esperar{flex-direction:column;gap:0;border:2px solid #9A6300;border-radius:16px;background:var(--sun-suave);box-shadow:0 4px 0 #9A6300;color:var(--ink);font-size:.78rem;font-weight:800;cursor:pointer}
+.dpad .center.btn-esperar .emo{font-size:1.5rem}
+.dpad .center.btn-esperar:active{transform:translateY(3px);box-shadow:0 1px 0 #9A6300}
+
+/* Presentación de los tachos */
+.card-pres{max-width:760px}
+.escena{background:#F7FBF6;border:2px solid var(--line);border-radius:16px;overflow:hidden}
+.escena svg{width:100%;height:auto;display:block}
+.pres-textos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.pres-textos p{margin:0;font-weight:700;font-size:1rem;line-height:1.3}
+@media (max-width:560px){.pres-textos{grid-template-columns:1fr}}
+.guide .que{margin:0 0 6px;font-size:.92rem;font-weight:700;color:var(--muted)}
+.desafio{font-size:22px;margin:0 2px}
+.station.abajo .cartel{bottom:auto;top:-14%}

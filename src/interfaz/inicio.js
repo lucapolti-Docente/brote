@@ -2,7 +2,7 @@
    No conoce ningún mundo ni modo en particular. */
 import { MUNDOS } from '../mundos/index.js';
 import { MODOS } from '../modos/index.js';
-import { TACHOS } from '../datos/tachos.js';
+import { infoTacho } from '../datos/tachos.js';
 import { T } from '../datos/textos.js';
 import { $ } from './dom.js';
 import { E, personaje } from './estado.js';
@@ -22,12 +22,13 @@ export function dibujarInicio(){
   $('heroeInicio').innerHTML = personaje().svg;
   $('tarjetasMundos').innerHTML = MUNDOS.map(m => {
     const a = avance(m);
-    const tachos = m.tachos.map(t => '<span class="mini-tacho" title="' + TACHOS[t].nombre + '">' + TACHOS[t].svg + '</span>').join('');
+    const tachos = m.tachos.map(t => { const i = infoTacho(t, m); return '<span class="mini-tacho" title="' + i.nombre + '">' + i.svg + '</span>'; }).join('');
+    const desafio = m.ducha ? '<span class="desafio emo" title="Ducha">🚿</span>' : m.calle ? '<span class="desafio emo" title="Semáforo">🚦</span>' : '<span class="desafio emo" title="Tornados">🌪️</span>';
     return '<article class="tarjeta-mundo mundo-' + m.id + '" style="--fondo-mundo:' + m.paleta.fondo + '">' +
       '<svg class="dibujo-mundo" viewBox="0 0 160 100" aria-hidden="true">' + m.dibujo + '</svg>' +
       '<div class="datos-mundo">' +
         '<h2>' + m.nombre + '</h2>' +
-        '<p class="tachos-mundo">' + tachos + '<span>' + T.tachos(m.tachos.length) + ' · ' + m.dificultad + '</span></p>' +
+        '<p class="tachos-mundo">' + tachos + desafio + '<span>' + T.tachos(m.tachos.length) + ' · ' + m.dificultad + '</span></p>' +
         '<p class="avance-mundo">' + (a.p.completo ? T.completo : T.nivelDe(a.p.nivel, a.total)) +
           ' <span class="estrellas-mundo" aria-label="' + a.estrellas + ' estrellas">★ ' + a.estrellas + '/' + (a.total * 3) + '</span></p>' +
         '<span class="barra-avance" aria-hidden="true"><span style="width:' + Math.round(a.limpio * 100) + '%"></span></span>' +

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { MUNDOS } from '../src/mundos/index.js';
 import { MODOS } from '../src/modos/index.js';
 import { RESIDUOS } from '../src/datos/residuos.js';
-import { TACHOS } from '../src/datos/tachos.js';
+import { TACHOS, infoTacho } from '../src/datos/tachos.js';
 import { PERSONAJES } from '../src/datos/personajes/index.js';
 import { tachoDe } from '../src/core/tablero.js';
 
@@ -16,12 +16,19 @@ const may = t => t.charAt(0).toUpperCase() + t.slice(1);
 const dibujo = r => r.img ? '<span class="svg">' + r.img + '</span>' : '<span class="ic">' + r.e + '</span>';
 const lugar = { reciclable:'izquierda', noReciclable:'derecha', reutilizable:'arriba', peligroso:'abajo' };
 
-const tablaNiveles = m => '<table><tr><th>Nivel</th><th>Residuos al empezar</th><th>Rocas</th><th>Tornados (y escudos)</th><th>Vecino (tiradas)</th></tr>' +
-  m.niveles.map((n, i) => '<tr><td>' + (i + 1) + '</td><td>' + n.residuos + '</td><td>' + n.rocas + '</td><td>' + (n.tornados || '—') + '</td><td>' + (n.vecino || '—') + '</td></tr>').join('') + '</table>';
+const extra = m => m.ducha ? 'Con arena' : m.calle ? 'Calle y semáforo' : null;
+const valorExtra = (m, n) => m.ducha ? (n.arena || '—') : m.calle ? (n.calle ? 'sí' : '—') : '';
+const tablaNiveles = m => '<table><tr><th>Nivel</th><th>Residuos al empezar</th><th>Obstáculos</th>' + (extra(m) ? '<th>' + extra(m) + '</th>' : '') + '<th>Tornados (y escudos)</th><th>Vecino (tiradas)</th></tr>' +
+  m.niveles.map((n, i) => '<tr><td>' + (i + 1) + '</td><td>' + n.residuos + '</td><td>' + n.rocas + '</td>' + (extra(m) ? '<td>' + valorExtra(m, n) + '</td>' : '') + '<td>' + (n.tornados || '—') + '</td><td>' + (n.vecino || '—') + '</td></tr>').join('') + '</table>';
+const desafio = {
+  parque:'Desafío: rocas que hay que rodear y tornados que avisan adónde van.',
+  playa:'Tacho nuevo: <b>caja azul (reutilizar)</b>. Desafío nuevo: <b>la ducha</b>. Algunos residuos tienen arena y, para reciclar o reutilizar, tienen que estar limpios y secos: primero se pasa por la ducha 🚿. Lo que va al compactador no hace falta lavarlo. Trabaja planear un recorrido con una parada antes. Los obstáculos son castillos de arena.',
+  ciudad:'Tacho nuevo: <b>contenedor rojo (peligrosos)</b>. Los tachos son como los de la calle de Buenos Aires: contenedor verde para reciclables limpios y secos y contenedor negro para húmedos. Desafío nuevo: <b>la calle</b>, que se cruza solo por la senda peatonal y con el semáforo en verde (cambia cada 4 turnos). Se suma <b>✋ Esperar</b>, que en Programar es una instrucción más. Trabaja contar turnos y anticipar. Los obstáculos son conos.'
+};
 
 const guia = Object.keys(TACHOS).map(t => {
   const lista = RESIDUOS.filter(r => tachoDe(r.id, ciudad) === t);
-  return '<div class="tacho"><h3><span class="mini">' + TACHOS[t].svg + '</span>' + TACHOS[t].nombre + ' <small>(' + lugar[t] + ')</small></h3><ul>' +
+  return '<div class="tacho"><h3><span class="mini">' + TACHOS[t].svg + '</span>' + TACHOS[t].nombre + ' <small>(' + lugar[t] + ')</small></h3><p><i>' + TACHOS[t].que + '</i></p><ul>' +
     lista.map(r => '<li>' + dibujo(r) + '<span><b>' + may(r.nombre) + '</b>: ' + r.porque[t] + '</span></li>').join('') + '</ul></div>';
 }).join('');
 
@@ -105,6 +112,7 @@ th{background:#D8E8DC}
   <li><b>Controles</b>: flechas del teclado (o W A S D), botones en pantalla o deslizar el dedo en el tablero.</li>
   <li><b>Menú ☰</b>: Inicio, Cómo jugar, Guía de residuos, Ver dibujo (lámina grande para copiar en papel), Nivel anterior, Reiniciar, Saltar nivel, Sonido y Configuración.</li>
   <li><b>Configuración</b>: personaje, TODO EN MAYÚSCULAS (para quienes leen solo imprenta mayúscula) y el nombre del vecino que tira basura (aparece en la cárcel al final).</li>
+  <li><b>🎬 Ver los tachos</b>: al entrar por primera vez a cada mundo, una animación corta muestra qué pasa con lo que va a cada tacho (también está en el menú).</li>
   <li><b>🔊 Escuchar</b>: lee en voz alta el residuo que tienen en la mano y la explicación del último error. Si la compu no tiene voz instalada, avisa.</li>
   <li><b>Lo que se guarda</b>: el nivel de cada mundo, las estrellas y las preferencias quedan en esa compu (en el navegador). No se guarda ningún dato de los chicos. Al volver a un mundo, se sigue donde quedó.</li>
   <li><b>El planeta</b> se limpia por nivel y muestra el nivel más alto al que se llegó en ese mundo: volver a un nivel anterior no lo ensucia, y si se borró lo guardado, <b>Saltar nivel</b> lo recupera.</li>
@@ -116,18 +124,19 @@ th{background:#D8E8DC}
   <li>Si el tacho es el equivocado, suma un error, el residuo sigue en la mano y el juego explica por qué.</li>
   <li><b>Rocas</b>: no se pueden atravesar. Chocar contra una roca o el borde no gasta paso.</li>
   <li><b>Tornados</b>: se mueven con cada paso; el círculo rojo punteado muestra su próxima casilla. Si alcanzan al personaje, el residuo que lleva vuela lejos (o pierde 2 pasos). Con el <b>escudo</b> dorado ⚡ se deshace un tornado.</li>
-  <li><b>Vecino</b> 🚶: camina, no hace daño y cada 10 pasos tira basura nueva. El nivel termina cuando se entregó todo <b>y</b> el vecino ya se fue.</li>
+  <li><b>Vecino</b> 🚶: camina, no hace daño y cada 20 pasos tira basura nueva (si ya se juntó todo, tira enseguida). El nivel termina cuando se entregó todo <b>y</b> el vecino ya se fue.</li>
   <li><b>Estrellas</b>: 3 sin errores ni golpes, 2 con hasta 2 en total, 1 con más.</li>
 </ul>
 
 <h2 class="salto">Los mundos</h2>
-${MUNDOS.map(m => `<h3>${m.nombre}: ${m.tachos.length} tachos · ${m.niveles.length} niveles${m.id === 'parque' ? '' : ' <small>(borrador)</small>'}</h3>
-<p>Tachos: ${m.tachos.map(t => TACHOS[t].nombre + ' (' + lugar[t] + ')').join(', ')}.</p>
+<p>Los tres siguen la misma progresión: niveles 1 a 3 solo residuos (en el 1 se aprende el tacho nuevo y desde el 2 el desafío nuevo), 4 a 6 con tornados, 7 a 9 con el vecino y tornados.</p>
+${MUNDOS.map(m => `<h3>${m.nombre}: ${m.tachos.length} tachos · ${m.niveles.length} niveles</h3>
+<p>Tachos: ${m.tachos.map(t => infoTacho(t, m).nombre + ' (' + lugar[t] + ')').join(', ')}. ${desafio[m.id] || ''}</p>
 ${tablaNiveles(m)}`).join('\n')}
-<p>El Parque tiene los mismos mapas que la versión que ya se usó en clase. Playa y Ciudad son borradores para probar con los chicos.</p>
+<p>El Parque tiene los mismos mapas que la versión que ya se usó en clase.</p>
 
 <h2>Guía de residuos</h2>
-<p>Así los clasifica el juego (en la Ciudad, que tiene los cuatro tachos). En los mundos que no tienen caja azul, el frasco de vidrio va al tacho verde.</p>
+<p>Así los clasifica el juego (en la Ciudad, que tiene los cuatro tachos). En los mundos que no tienen caja azul, el frasco de vidrio va al tacho verde. En la Ciudad, las pilas y las lamparitas se llevan a un Punto Verde y los remedios vencidos se devuelven en la farmacia.</p>
 <div class="guia">${guia}</div>
 <p><small>La cáscara de banana va con lo no reciclable para simplificar; el juego aclara que es ideal para compost.</small></p>
 
@@ -138,7 +147,7 @@ ${tablaNiveles(m)}`).join('\n')}
 </div>
 <ul>
   <li>Si algo sale mal (choque, golpe de tornado o tacho equivocado), se frena y el mensaje dice en qué instrucción fue ("Instrucción 3: …"). Se puede seguir con las que quedan o cambiarlas.</li>
-  <li>Los tornados y el vecino se mueven con cada instrucción, igual que al mover de a una.</li>
+  <li>Los tornados, el vecino y el semáforo se mueven con cada instrucción, igual que al mover de a una. En la Ciudad, <b>✋ Esperar</b> es una instrucción más.</li>
   <li>Cuando se cumplen todas, la lista se vacía para armar la próxima.</li>
   <li>Idea para la clase: antes de Ejecutar, que digan en voz alta dónde va a terminar el personaje; después comprueban con Paso.</li>
 </ul>

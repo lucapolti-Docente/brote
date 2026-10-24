@@ -5,7 +5,7 @@
      brote-name      nombre del vecino
      brote-caps      '1' o '0' (TODO EN MAYÚSCULAS)
      brote-sonido    '1' o '0'
-     brote-progreso  JSON { version:1, mundos:{ parque:{ nivel, max, completo, estrellas:{ "1":3, … } }, … } }
+     brote-progreso  JSON { version:1, mundos:{ parque:{ nivel, max, completo, estrellas:{ "1":3, … }, vioPres }, … } }
    La versión de proyecto (.zip) guardaba con prefijo "brote:" y JSON ({ skin, neighborName, caps }).
    Si no hay claves nuevas pero sí de esas, se pasan a las nuevas. Las viejas no se borran. */
 export const CLAVES = { skin:'brote-skin', nombre:'brote-name', mayus:'brote-caps', sonido:'brote-sonido', progreso:'brote-progreso' };
@@ -57,7 +57,7 @@ export function progresoDe(guardado, totalNiveles){
     const n = +k, s = g.estrellas[k];
     if (Number.isInteger(n) && n >= 1 && n <= totalNiveles && [1, 2, 3].includes(s)) estrellas[n] = s;
   });
-  return { nivel, max:Math.max(nivel, entero(g.max, 1)), completo:!!g.completo, estrellas };
+  return { nivel, max:Math.max(nivel, entero(g.max, 1)), completo:!!g.completo, estrellas, vioPres:!!g.vioPres };
 }
 
 export const Guardado = crearGuardado(() => window.localStorage);

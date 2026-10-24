@@ -1,8 +1,8 @@
 /* Una partida en pantalla: empezar un nivel, mover, mostrar mensajes, ganar, pasar de nivel y el final. */
 import * as Core from '../core/index.js';
-import { TACHOS } from '../datos/tachos.js';
+import { infoTacho } from '../datos/tachos.js';
 import { SONIDO_DE } from '../datos/sonidos.js';
-import { T, conArticulo } from '../datos/textos.js';
+import { T, conArticulo, Mayuscula } from '../datos/textos.js';
 import { MODOS, modo as buscarModo } from '../modos/index.js';
 import { PLANETA_SVG, pintarPlaneta } from '../dibujo/planeta.js';
 import { $, animar, dibujoResiduo, reducido } from './dom.js';
@@ -12,6 +12,7 @@ import { sonar } from './sonido.js';
 import { decir, hayVoz } from './voz.js';
 import { abrir, cerrar, abrirAyuda } from './ventanas.js';
 import { reiniciarCola, dibujarCola } from './programa.js';
+import * as Presentacion from './presentacion.js';
 
 /* ---------- Mensajes ---------- */
 export function decirEnPantalla(texto, tipo){
@@ -21,7 +22,7 @@ export function decirEnPantalla(texto, tipo){
 /* Convierte los eventos de un movimiento en un mensaje, un sonido y animaciones.
    Si pasan varias cosas en un paso, se muestra la última (como en el juego publicado). */
 export function mostrarEventos(r, n){
-  const e = E.partida, tag = n ? T.instruccion(n) : '';
+  const e = E.partida, m = e.mundo, tag = n ? T.instruccion(n) : '';
   let texto = null, tipo = 'info', son = null;
   r.ev.forEach(x => {
     if (SONIDO_DE[x.t]) son = SONIDO_DE[x.t];
@@ -32,15 +33,23 @@ export function mostrarEventos(r, n){
       case 'vecinoSeAparta': texto = T.vecinoSeAparta(E.nombre); tipo = 'info'; break;
       case 'escudo': texto = tag + T.escudo; tipo = 'good'; break;
       case 'yaTieneEscudo': texto = tag + T.yaTieneEscudo; tipo = 'info'; break;
-      case 'levanta': texto = tag + T.levanta(x.residuo); tipo = 'info'; E.ultimoError = ''; break;
+      case 'levanta': texto = tag + (x.arena ? T.levantaArena(x.residuo) : T.levanta(x.residuo)); tipo = 'info'; E.ultimoError = ''; break;
       case 'manoLlena': texto = tag + T.manoLlena; tipo = 'info'; break;
-      case 'tachoVacio': texto = tag + T.tachoVacio(x.tacho); tipo = 'info'; break;
+      case 'tachoVacio': texto = tag + T.tachoVacio(x.tacho, m); tipo = 'info'; break;
       case 'mal':
-        texto = tag + T.mal(x.residuo, x.correcto); tipo = 'bad'; E.ultimoError = T.mal(x.residuo, x.correcto);
+        texto = tag + T.mal(x.residuo, x.correcto, m); tipo = 'bad'; E.ultimoError = T.mal(x.residuo, x.correcto, m);
         animar(tachoEl(x.tacho), 'nope', 400); break;
+      case 'sucio':
+        texto = tag + T.sucio(x.residuo); tipo = 'bad'; E.ultimoError = T.sucio(x.residuo);
+        animar(tachoEl(x.tacho), 'nope', 400); break;
+      case 'lava': texto = tag + T.lava(x.residuo); tipo = 'good'; E.ultimoError = ''; animar(document.querySelector('.ducha'), 'chorro', 700); break;
+      case 'ducha': texto = tag + T.ducha(x.lleva); tipo = 'info'; break;
+      case 'calle': texto = tag + T.calle; tipo = 'bad'; animar(robot(), 'bump', 300); break;
+      case 'rojo': texto = tag + T.rojo(x.faltan); tipo = 'bad'; animar(robot(), 'bump', 300); break;
+      case 'espera': texto = tag + T.espera; tipo = 'info'; break;
       case 'entrega': {
-        texto = tag + T.entrega(x.residuo, x.tacho); tipo = 'good'; E.ultimoError = '';
-        const t = TACHOS[x.tacho];
+        texto = tag + T.entrega(x.residuo, x.tacho, m); tipo = 'good'; E.ultimoError = '';
+        const t = infoTacho(x.tacho, m);
         volar(t.cubo ? '<span class="cube"></span>' : dibujoResiduo(x.residuo), e.robot, t);
         break;
       }
@@ -49,7 +58,7 @@ export function mostrarEventos(r, n){
         texto = x.solto ? T.golpeSolto(x.solto) : T.golpe; tipo = 'bad'; E.ultimoError = '';
         animar(robot(), 'dizzy', 650); break;
       case 'vence': texto = T.vence(x.quedan); tipo = 'good'; break;
-      case 'vecinoTira': texto = T.vecinoTira(E.nombre, x.residuo, x.seVa); tipo = 'bad'; break;
+      case 'vecinoTira': texto = T.vecinoTira(E.nombre, x.residuo, x.seVa, x.arena); tipo = 'bad'; break;
     }
   });
   sincronizar();
@@ -75,15 +84,16 @@ export function actualizarHUD(){
     '<span>' + T.quedan + ': <b>' + (e.total - e.entregados) + '</b></span>' +
     '<span>' + T.errores + ': <b>' + e.errores + '</b></span>' +
     '<span>' + T.pasos + ': <b>' + e.pasos + '</b></span>' +
-    m.tachos.map(t => '<span class="opt">' + TACHOS[t].nombre + ': <b>' + e.porTacho[t] + '</b></span>').join('') +
+    m.tachos.map(t => '<span class="opt">' + Mayuscula(infoTacho(t, m).palabra.toLowerCase()) + ': <b>' + e.porTacho[t] + '</b></span>').join('') +
     '<span class="opt">' + T.golpes + ': <b>' + e.golpes + '</b></span>' +
     '<span class="opt">' + T.vencidos + ': <b>' + e.vencidos + '</b></span>';
   $('shieldTag').hidden = !e.escudo;
   const mano = Core.enLaMano(e);
   $('carryBox').classList.toggle('full', !!mano);
-  $('carrySlot').innerHTML = mano ? dibujoResiduo(mano.tipo) : '';
+  $('carrySlot').innerHTML = mano ? dibujoResiduo(mano.tipo) + (mano.arena ? '<span class="arena" aria-hidden="true"></span>' : '') : '';
+  $('carrySlot').classList.toggle('con-arena', !!(mano && mano.arena));
   $('carryText').innerHTML = mano
-    ? T.llevando(mano.tipo) + '<small>' + T.llevandoAyuda(m.tachos.length) + '</small>'
+    ? T.llevando(mano.tipo) + '<small>' + (mano.arena ? '🚿 ' + T.ducha(null) : T.llevandoAyuda(m.tachos.length)) + '</small>'
     : T.manoVacia + '<small>' + T.manoVaciaAyuda + '</small>';
 }
 
@@ -100,6 +110,7 @@ export function empezarNivel(numero, prefijo){
   armarTablero();
   actualizarHUD();
   const nivel = m.niveles[numero - 1];
+  ponerCentro();
   decirEnPantalla((prefijo || '') + T.inicioNivel(numero, E.partida.total, nivel.tornados, nivel.vecino ? E.nombre : null, nivel.vecino), 'info');
   actualizarMenuJuego();
 }
@@ -160,12 +171,14 @@ export function entrarAMundo(idMundo, idModo){
   document.body.classList.add('en-juego');
   const m = mundoActual(), p = P();
   $('tituloJuego').innerHTML = T.tituloCorto + '<span class="long"> · ' + m.nombre + '</span> <span class="emo">🌱</span>';
-  $('leyenda').innerHTML = m.tachos.map(t => '<span>' + TACHOS[t].lugar + '</span>').join('');
+  $('leyenda').innerHTML = m.tachos.map(t => '<span>' + infoTacho(t, m).lugar + '</span>').join('');
   $('planeta').innerHTML = PLANETA_SVG;
   const nuevo = p.max === 1 && p.nivel === 1 && !Object.keys(p.estrellas).length;
   empezarNivel(p.nivel, nuevo ? '' : T.retomaste);
   elegirModo(idModo, true);
-  if (nuevo) abrirAyuda();
+  // La primera vez en un mundo: la presentación de sus tachos y, después, "Cómo jugar".
+  if (!p.vioPres){ p.vioPres = true; guardarProgreso(); Presentacion.mostrar(m.id, nuevo ? abrirAyuda : null); }
+  else if (nuevo) abrirAyuda();
 }
 
 /* ---------- Modo Mover / Programar ---------- */
@@ -180,9 +193,19 @@ export function elegirModo(id, silencioso){
   dibujarSelectorModo();
   $('prog').hidden = !m.cola;
   document.body.classList.toggle('programando', m.cola);
-  $('dpadCenter').textContent = m.cola ? T.agregar : T.mover;
+  ponerCentro();
   dibujarCola();
   if (!silencioso) decirEnPantalla(m.cola ? T.modoProgramar : T.modoMover, 'info');
+}
+
+/* El centro de las flechas: en los mundos con Esperar es el botón ✋; si no, solo dice "mover" o "agregar". */
+export function ponerCentro(){
+  const c = $('dpadCenter'), cola = buscarModo(E.modo).cola;
+  const puede = !!(E.partida && E.partida.puedeEsperar);
+  c.classList.toggle('btn-esperar', puede);
+  c.innerHTML = puede ? '<span class="emo" aria-hidden="true">✋</span><span>' + T.esperar + '</span>' : (cola ? T.agregar : T.mover);
+  c.disabled = !puede;
+  c.setAttribute('aria-label', puede ? T.esperar : (cola ? T.agregar : T.mover));
 }
 
 /* ---------- 🔊 Escuchar ---------- */

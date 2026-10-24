@@ -60,7 +60,7 @@
     <div class="dpad">
       <button data-dir="up">↑</button>
       <button data-dir="left">←</button>
-      <div class="center" id="dpadCenter"></div>
+      <button class="center" id="dpadCenter" disabled></button>
       <button data-dir="right">→</button>
       <button data-dir="down">↓</button>
     </div>
@@ -84,12 +84,12 @@
   <button class="menu-item" data-accion="inicio" data-solo-juego></button>
   <button class="menu-item" data-accion="comoJugar"></button>
   <button class="menu-item" data-accion="guia"></button>
+  <button class="menu-item" data-accion="presentacion"></button>
   <button class="menu-item" data-accion="dibujo"></button>
   <button class="menu-item" data-accion="anterior" data-solo-juego></button>
   <button class="menu-item" data-accion="reiniciar" data-solo-juego></button>
   <button class="menu-item" data-accion="saltar" data-solo-juego></button>
   <button class="menu-item keep" data-accion="sonido"></button>
-  <a class="menu-item" data-accion="docentes" href="docentes/index.html" target="_blank" rel="noopener"></a>
   <button class="menu-item keep" data-accion="config" id="cfgBtn" aria-expanded="false" aria-controls="settings"></button>
   <section class="settings" id="settings" hidden aria-label="Configuración">
     <div class="set-group">
@@ -206,6 +206,19 @@
   <div class="final-botones">
     <button class="btn ghost-final" id="finalInicio"></button>
     <button class="btn" id="finalBtn"></button>
+  </div>
+</div>
+
+<!-- Presentación de los tachos (animación con GSAP) -->
+<div class="overlay" id="presOv" hidden>
+  <div class="card card-pres" role="dialog" aria-modal="true" aria-labelledby="presTitle">
+    <h2 id="presTitle"></h2>
+    <div class="escena" id="presEscena"></div>
+    <div class="pres-textos" id="presTextos"></div>
+    <div class="actions">
+      <button class="btn ghost" id="presOtraVez"></button>
+      <button class="btn" data-cierra="presOv" id="presCerrar"></button>
+    </div>
   </div>
 </div>
 

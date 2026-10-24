@@ -22,7 +22,10 @@ Este CLAUDE.md manda por sobre el general de `juegos-docente/`: acá sí hay npm
 
 ## Arquitectura
 - `src/core/`: tablero, generador de niveles, reglas (`juego.js`) y corrida del programa. Sin DOM. Todo el azar sale de la semilla de la partida.
-- `src/mundos/`: un archivo por mundo (tachos, residuos, paleta, niveles) y `index.js` con la lista. `src/modos/`: Mover y Programar.
+- `src/mundos/`: un archivo por mundo (tachos, residuos, paleta, obstáculo, desafío y niveles) y `index.js` con la lista. `src/modos/`: Mover y Programar.
+- Progresión de cada mundo (decisión de Luca): niveles 1 a 3 solo residuos (el 1 enseña el tacho nuevo, desde el 2 el desafío nuevo), 4 a 6 tornados, 7 a 9 vecino y tornados. Cada mundo suma un tacho y un desafío de lógica relacionado con el lugar (Playa: ducha; Ciudad: calle con semáforo y Esperar).
+- `src/interfaz/presentacion.js`: animaciones de los tachos con GSAP.
+- `docentes/` se publica pero el juego no la enlaza (Luca pone el enlace en otra página).
 - `src/datos/`: textos, residuos, tachos, personajes (uno por archivo, con `autor`), sonidos.
 - `src/dibujo/`: SVG (planeta, tachos, frasco). `src/interfaz/`: lo único que toca la pantalla.
 - Los mapas del Parque tienen que ser iguales a los del HTML publicado (`tests/original.test.js`). No cambiar sus semillas ni el orden de sus residuos.
