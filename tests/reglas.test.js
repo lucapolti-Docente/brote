@@ -53,7 +53,7 @@ describe('entregar', () => {
 describe('vecino', () => {
   it('el nivel no se gana hasta que el vecino hizo todas sus tiradas', () => {
     const e = partida(parque, { robot:{ r:4, c:1 }, residuos:[{ id:0, tipo:'lata', r:0, c:8, vivo:true }],
-      vecino:{ r:8, c:8, pasos:0, tiradas:0, max:1, dir:'left' } });
+      vecino:{ r:8, c:8, pasos:0, desdeTirada:0, cada:20, tiradas:0, max:1, dir:'left' } });
     e.mano = 0;
     const r = Core.mover(e, 'left');
     expect(r.res).toBe('entrego');
@@ -69,7 +69,7 @@ describe('vecino', () => {
   it('si queda encerrado, se corre a la casilla libre más cercana y sigue caminando', () => {
     // Vecino en la esquina, con una roca abajo; el personaje le tapa la única salida.
     const e = partida(parque, { robot:{ r:0, c:2 }, rocas:new Set([Core.clave(1, 0)]),
-      vecino:{ r:0, c:0, pasos:0, tiradas:0, max:3, dir:'left' }, residuos:[{ id:0, tipo:'lata', r:8, c:8, vivo:true }] });
+      vecino:{ r:0, c:0, pasos:0, desdeTirada:0, cada:20, tiradas:0, max:3, dir:'left' }, residuos:[{ id:0, tipo:'lata', r:8, c:8, vivo:true }] });
     const r = Core.mover(e, 'left');
     expect(e.robot).toEqual({ r:0, c:1 });
     expect(r.ev.some(x => x.t === 'vecinoSeCorre')).toBe(true);
@@ -80,7 +80,7 @@ describe('vecino', () => {
   it('si tapa la única salida de un callejón, al chocarlo se corre (antes el personaje quedaba trabado)', () => {
     // El caso que encontró el test de niveles (Parque 8): personaje en un callejón, vecino en la salida.
     const e = partida(parque, { robot:{ r:3, c:1 }, rocas:new Set([Core.clave(2, 1), Core.clave(3, 0), Core.clave(3, 2)]),
-      vecino:{ r:4, c:1, pasos:0, tiradas:0, max:3, dir:'left' }, residuos:[{ id:0, tipo:'lata', r:8, c:8, vivo:true }] });
+      vecino:{ r:4, c:1, pasos:0, desdeTirada:0, cada:20, tiradas:0, max:3, dir:'left' }, residuos:[{ id:0, tipo:'lata', r:8, c:8, vivo:true }] });
     const r = Core.mover(e, 'down');
     expect(r.res).toBe('bloqueado');
     expect(r.ev.some(x => x.t === 'vecinoSeAparta')).toBe(true);
@@ -88,7 +88,7 @@ describe('vecino', () => {
     expect(Core.mover(e, 'down').res).toBe('movio');
   });
   it('si el personaje tiene otra salida, chocar contra el vecino no lo mueve', () => {
-    const e = partida(parque, { robot:{ r:3, c:1 }, vecino:{ r:4, c:1, pasos:0, tiradas:0, max:3, dir:'left' },
+    const e = partida(parque, { robot:{ r:3, c:1 }, vecino:{ r:4, c:1, pasos:0, desdeTirada:0, cada:20, tiradas:0, max:3, dir:'left' },
       residuos:[{ id:0, tipo:'lata', r:8, c:8, vivo:true }] });
     Core.mover(e, 'down');
     expect(e.vecino).toMatchObject({ r:4, c:1, pasos:0 });
@@ -97,7 +97,7 @@ describe('vecino', () => {
     const tipos = new Set();
     for (let s = 1; s < 60; s++){
       const e = partida(playa, { robot:{ r:4, c:4 }, residuos:[{ id:0, tipo:'lata', r:8, c:8, vivo:true }],
-        vecino:{ r:2, c:2, pasos:9, tiradas:0, max:3, dir:'left' }, azar:s });
+        vecino:{ r:2, c:2, pasos:19, desdeTirada:19, cada:20, tiradas:0, max:3, dir:'left' }, azar:s });
       Core.mover(e, 'down');
       e.residuos.slice(1).forEach(x => tipos.add(x.tipo));
     }
@@ -105,7 +105,7 @@ describe('vecino', () => {
     expect([...tipos].some(t => playa.residuos.indexOf(t) >= 10)).toBe(true);
   });
   it('nunca hace daño y bloquea el paso sin gastar paso', () => {
-    const e = partida(parque, { robot:{ r:4, c:4 }, vecino:{ r:4, c:5, pasos:0, tiradas:0, max:3, dir:'left' },
+    const e = partida(parque, { robot:{ r:4, c:4 }, vecino:{ r:4, c:5, pasos:0, desdeTirada:0, cada:20, tiradas:0, max:3, dir:'left' },
       residuos:[{ id:0, tipo:'lata', r:8, c:8, vivo:true }] });
     const r = Core.mover(e, 'right');
     expect(r.res).toBe('bloqueado');

@@ -10,11 +10,13 @@ const SEMILLAS = Array.from({ length:150 }, (_, i) => 1 + i * 7777);
 
 /* ¿Se llega caminando (sin contar lo que se mueve) a cada residuo y a la entrada de cada tacho? */
 function todoAlAlcance(e){
-  const llega = Core.alcanzables(e.rocas, e.robot, (r, c) => Core.tachoEn(e, r, c) !== null);
+  const muros = new Set([...e.rocas, ...e.calle]);
+  const llega = Core.alcanzables(muros, e.robot, (r, c) => Core.tachoEn(e, r, c) !== null);
   const vivos = e.residuos.filter(x => x.vivo && x.id !== e.mano);
   return vivos.every(x => llega.has(Core.clave(x.r, x.c))) &&
     e.tachos.every(t => llega.has(Core.clave(t.entrada.r, t.entrada.c))) &&
-    e.escudos.filter(s => s.vivo).every(s => llega.has(Core.clave(s.r, s.c)));
+    e.escudos.filter(s => s.vivo).every(s => llega.has(Core.clave(s.r, s.c))) &&
+    (!e.ducha || llega.has(Core.clave(e.ducha.r, e.ducha.c)));
 }
 
 describe('datos de los mundos', () => {
@@ -33,13 +35,17 @@ describe('datos de los mundos', () => {
       m.tachos.forEach(t => expect(m.residuos.some(id => Core.tachoDe(id, m) === t), t).toBe(true));
     });
   });
-  it('Playa tiene 3 tachos y Ciudad 4, con 3 niveles cada una', () => {
+  it('cada mundo: 9 niveles con la progresión 3 solo residuos + 3 con tornados + 3 con vecino y tornados', () => {
     const [parque, playa, ciudad] = MUNDOS;
-    expect(parque.tachos.length).toBe(2);
-    expect(playa.tachos.length).toBe(3);
-    expect(ciudad.tachos.length).toBe(4);
-    expect(playa.niveles.length).toBe(3);
-    expect(ciudad.niveles.length).toBe(3);
+    expect([parque, playa, ciudad].map(m => m.tachos.length)).toEqual([2, 3, 4]);
+    MUNDOS.forEach(m => {
+      expect(m.niveles.length, m.id).toBe(9);
+      expect(m.niveles.map(n => !!n.tornados), m.id).toEqual([false, false, false, true, true, true, true, true, true]);
+      expect(m.niveles.map(n => !!n.vecino), m.id).toEqual([false, false, false, false, false, false, true, true, true]);
+    });
+    // El nivel 1 de cada mundo nuevo enseña el tacho nuevo; el desafío nuevo aparece desde el 2.
+    expect(playa.niveles.map(n => !!n.arena)).toEqual([false, true, true, true, true, true, true, true, true]);
+    expect(ciudad.niveles.map(n => !!n.calle)).toEqual([false, true, true, true, true, true, true, true, true]);
   });
   it('el frasco va a la caja azul si el mundo la tiene, y si no a reciclables', () => {
     const [parque, playa, ciudad] = MUNDOS;

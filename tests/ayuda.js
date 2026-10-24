@@ -28,7 +28,7 @@ export function camino(e, metas, evitar){
     if (k !== ini && Core.tachoEn(e, r, c) !== null) continue;
     for (const [d, [dr, dc]] of Object.entries(DIRS)){
       const nr = r + dr, nc = c + dc, nk = clave(nr, nc);
-      if (!dentro(nr, nc) || prev.has(nk) || e.rocas.has(nk)) continue;
+      if (!dentro(nr, nc) || prev.has(nk) || Core.muro(e, nr, nc)) continue;
       if (Core.tachoEn(e, nr, nc) !== null && !metas.has(nk)) continue;
       if (evitar.has(nk) && !metas.has(nk)) continue;
       prev.set(nk, { k, d }); cola.push(nk);
@@ -42,7 +42,9 @@ export function proximaFlecha(e, azar){
   const { clave } = Core;
   let metas;
   const it = Core.enLaMano(e);
-  if (it){
+  if (it && it.arena){
+    metas = new Set([clave(e.ducha.r, e.ducha.c)]);
+  } else if (it){
     const t = e.tachos.find(x => x.id === Core.tachoDe(it.tipo, e.mundo));
     metas = new Set([clave(t.r, t.c)]);
   } else {
@@ -56,7 +58,12 @@ export function proximaFlecha(e, azar){
   e.tornados.forEach(s => { peligro.add(clave(s.r, s.c)); peligro.add(clave(s.nr, s.nc)); });
   if (e.vecino) peligro.add(clave(e.vecino.r, e.vecino.c));
   const ruta = metas.size ? (camino(e, metas, e.escudo ? new Set() : peligro) || camino(e, metas, new Set(e.vecino ? [clave(e.vecino.r, e.vecino.c)] : []))) : null;
-  if (ruta && ruta.length) return ruta[0];
+  if (ruta && ruta.length){
+    // Semáforo en rojo justo adelante: esperar (si se puede).
+    const [dr, dc] = Core.DIRS[ruta[0]], nr = e.robot.r + dr, nc = e.robot.c + dc;
+    if (e.semaforo && !e.semaforo.verde && Core.esSenda(e, nr, nc) && !Core.esSenda(e, e.robot.r, e.robot.c) && e.puedeEsperar) return 'wait';
+    return ruta[0];
+  }
   const dirs = Object.keys(Core.DIRS);
   return dirs[Math.floor(azar() * dirs.length)];
 }
@@ -68,7 +75,7 @@ export function jugar(mundo, numero, semilla, { max = 3000, alMover } = {}){
   let flechas = 0, choco = false;
   while (!e.terminado && flechas < max){
     // Después de chocar (por ejemplo, contra el vecino), como haría un chico: probar para otro lado.
-    const dirs = Object.keys(Core.DIRS);
+    const dirs = Object.keys(Core.DIRS).concat(e.puedeEsperar ? ['wait'] : []);
     const d = choco ? dirs[Math.floor(azar() * dirs.length)] : proximaFlecha(e, azar);
     const r = Core.mover(e, d);
     choco = r.res === 'bloqueado';
@@ -83,6 +90,6 @@ export function resumen(e){
   return JSON.stringify({
     robot:e.robot, mano:e.mano, escudo:e.escudo, pasos:e.pasos, errores:e.errores, golpes:e.golpes, vencidos:e.vencidos,
     entregados:e.entregados, total:e.total, terminado:e.terminado, azar:e.azar,
-    residuos:e.residuos, tornados:e.tornados, escudos:e.escudos, vecino:e.vecino
+    residuos:e.residuos, tornados:e.tornados, escudos:e.escudos, vecino:e.vecino, semaforo:e.semaforo
   });
 }

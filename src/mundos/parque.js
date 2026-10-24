@@ -1,7 +1,9 @@
 /* Parque: el mundo del HTML publicado, ya probado en clase. Dos tachos.
    Los mapas salen de la semilla de cada nivel con el mismo generador de siempre: no cambies las semillas
    si querés que los mapas sigan iguales a los que ya conocen los chicos.
-   Cada nivel: residuos al empezar, rocas, tornados (con un escudo por tornado) y vecino (cuántas veces tira basura; 0 = no aparece). */
+   Cada nivel: residuos al empezar, rocas, tornados (con un escudo por tornado) y vecino (cuántas veces tira basura; 0 = no aparece).
+   El vecino tira cada 20 pasos (antes eran 10 y se iba enseguida: ver DECISIONES.md).
+   Progresión: 1 a 3 solo residuos · 4 a 6 tornados · 7 a 9 vecino y tornados. */
 export default {
   id:'parque',
   nombre:'Parque',
@@ -9,17 +11,18 @@ export default {
   dificultad:'Fácil',
   tachos:['reciclable', 'noReciclable'],
   residuos:['botella', 'lata', 'diario', 'caja', 'vidrio', 'papel', 'banana', 'curita', 'caramelo', 'esponja'],
+  obstaculo:'roca',
   paleta:{ fondo:'#E6F2E4', baldosa:'#EAD7AE', baldosa2:'#DCC38F', roca:'#8C806C', roca2:'#5B5244' },
   niveles:[
     { semilla:7932,  residuos:4, rocas:9,  tornados:0, vecino:0 },
     { semilla:15851, residuos:5, rocas:12, tornados:0, vecino:0 },
-    { semilla:23770, residuos:6, rocas:15, tornados:1, vecino:0 },
+    { semilla:23770, residuos:6, rocas:15, tornados:0, vecino:0 },
     { semilla:31689, residuos:7, rocas:18, tornados:1, vecino:0 },
     { semilla:39608, residuos:8, rocas:21, tornados:2, vecino:0 },
     { semilla:47527, residuos:9, rocas:24, tornados:2, vecino:0 },
-    { semilla:55446, residuos:7, rocas:22, tornados:1, vecino:3 },
-    { semilla:63365, residuos:8, rocas:22, tornados:2, vecino:4 },
-    { semilla:71284, residuos:9, rocas:22, tornados:2, vecino:5 }
+    { semilla:55446, residuos:7, rocas:22, tornados:1, vecino:2 },
+    { semilla:63365, residuos:8, rocas:22, tornados:2, vecino:3 },
+    { semilla:71284, residuos:9, rocas:22, tornados:2, vecino:4 }
   ],
   /* Dibujito de la tarjeta de inicio (viewBox 0 0 160 100). */
   dibujo:

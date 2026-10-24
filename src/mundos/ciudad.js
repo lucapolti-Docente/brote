@@ -1,5 +1,9 @@
-/* Ciudad: borrador de 3 niveles. Cuatro tachos: suma el contenedor rojo para los residuos peligrosos.
-   (Reconstruido: el proyecto con los mapas originales de Ciudad no estaba en la compu. Ver DECISIONES.md.) */
+/* Ciudad: cuatro tachos, como en las calles de Buenos Aires: contenedor verde (reciclables limpios y secos),
+   contenedor negro (húmedos: restos de comida, papeles sucios), caja azul (reutilizar) y contenedor rojo (peligrosos).
+   Desafío nuevo: la calle. Se cruza solo por la senda peatonal y con el semáforo en verde (cambia cada 4 turnos).
+   Con ✋ Esperar el personaje se queda quieto un turno.
+   Progresión: 1 aprende el contenedor rojo · 2 y 3 calle · 4 a 6 tornados · 7 a 9 vecino y tornados.
+   Los obstáculos son conos (funcionan igual que las rocas). */
 export default {
   id:'ciudad',
   nombre:'Ciudad',
@@ -7,12 +11,23 @@ export default {
   dificultad:'Difícil',
   tachos:['reciclable', 'noReciclable', 'reutilizable', 'peligroso'],
   sinRepetir:true,
+  esperar:true,
+  calle:{ fila:6, sendas:[2, 6], ciclo:4 },
+  obstaculo:'cono',
+  /* Cómo se ven y se llaman los tachos en este mundo (si no dice nada, como en los otros). */
+  aspecto:{ reciclable:'contenedorVerde', noReciclable:'contenedorNegro' },
   residuos:['botella', 'lata', 'diario', 'caja', 'vidrio', 'papel', 'banana', 'curita', 'caramelo', 'esponja', 'frasco', 'remera', 'peluche', 'pila', 'remedio', 'lamparita'],
-  paleta:{ fondo:'#E7EAF0', baldosa:'#D9DCE2', baldosa2:'#C6CAD3', roca:'#7D7466', roca2:'#4E473D' },
+  paleta:{ fondo:'#E7EAF0', baldosa:'#D9DCE2', baldosa2:'#C6CAD3', roca:'#F07B1F', roca2:'#B8520A' },
   niveles:[
-    { semilla:4001, residuos:6, rocas:10, tornados:0, vecino:0 },
-    { semilla:5003, residuos:7, rocas:13, tornados:1, vecino:0 },
-    { semilla:6007, residuos:8, rocas:16, tornados:1, vecino:3 }
+    { semilla:4001,  residuos:6, rocas:10, tornados:0, vecino:0, calle:false },
+    { semilla:5003,  residuos:6, rocas:10, tornados:0, vecino:0, calle:true },
+    { semilla:6007,  residuos:7, rocas:12, tornados:0, vecino:0, calle:true },
+    { semilla:7013,  residuos:6, rocas:12, tornados:1, vecino:0, calle:true },
+    { semilla:8017,  residuos:7, rocas:14, tornados:1, vecino:0, calle:true },
+    { semilla:9029,  residuos:8, rocas:14, tornados:2, vecino:0, calle:true },
+    { semilla:10037, residuos:7, rocas:14, tornados:1, vecino:2, calle:true },
+    { semilla:11047, residuos:8, rocas:16, tornados:2, vecino:3, calle:true },
+    { semilla:12049, residuos:9, rocas:16, tornados:2, vecino:4, calle:true }
   ],
   dibujo:
     '<rect width="160" height="100" rx="14" fill="#BFD3EA"/>'+

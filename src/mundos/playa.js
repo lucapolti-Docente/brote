@@ -1,5 +1,8 @@
-/* Playa: borrador de 3 niveles. Tres tachos: suma la caja azul para lo que se puede volver a usar.
-   (Reconstruido: el proyecto con los mapas originales de Playa no estaba en la compu. Ver DECISIONES.md.) */
+/* Playa: tres tachos. Suma la caja azul (REUTILIZAR: se vuelve a usar como está).
+   Desafío nuevo: la ducha. Algunos residuos tienen arena (arena: cuántos) y para el tacho verde o la caja azul
+   tienen que estar limpios y secos: primero se pasa por la ducha 🚿.
+   Progresión: 1 aprende la caja azul · 2 y 3 ducha · 4 a 6 tornados · 7 a 9 vecino y tornados.
+   Los obstáculos son castillos de arena (funcionan igual que las rocas). */
 export default {
   id:'playa',
   nombre:'Playa',
@@ -7,12 +10,20 @@ export default {
   dificultad:'Medio',
   tachos:['reciclable', 'noReciclable', 'reutilizable'],
   sinRepetir:true,
+  ducha:true,
+  obstaculo:'castillo',
   residuos:['botella', 'lata', 'diario', 'caja', 'vidrio', 'papel', 'banana', 'curita', 'caramelo', 'esponja', 'frasco', 'remera', 'peluche'],
-  paleta:{ fondo:'#E2F1F8', baldosa:'#F3E3B5', baldosa2:'#E6CF92', roca:'#8E8478', roca2:'#5E564C' },
+  paleta:{ fondo:'#E2F1F8', baldosa:'#F3E3B5', baldosa2:'#E6CF92', roca:'#C9A25E', roca2:'#8A6A32' },
   niveles:[
-    { semilla:1009, residuos:5, rocas:10, tornados:0, vecino:0 },
-    { semilla:2017, residuos:6, rocas:13, tornados:1, vecino:0 },
-    { semilla:3023, residuos:7, rocas:16, tornados:1, vecino:3 }
+    { semilla:1009, residuos:5, rocas:10, tornados:0, vecino:0, arena:0 },
+    { semilla:2017, residuos:6, rocas:12, tornados:0, vecino:0, arena:1 },
+    { semilla:3023, residuos:7, rocas:14, tornados:0, vecino:0, arena:2 },
+    { semilla:4049, residuos:6, rocas:14, tornados:1, vecino:0, arena:1 },
+    { semilla:5059, residuos:7, rocas:16, tornados:1, vecino:0, arena:2 },
+    { semilla:6067, residuos:8, rocas:18, tornados:2, vecino:0, arena:2 },
+    { semilla:7079, residuos:7, rocas:18, tornados:1, vecino:2, arena:2 },
+    { semilla:8081, residuos:8, rocas:20, tornados:2, vecino:3, arena:2 },
+    { semilla:9091, residuos:9, rocas:20, tornados:2, vecino:4, arena:3 }
   ],
   dibujo:
     '<rect width="160" height="100" rx="14" fill="#9FD8F2"/>'+
